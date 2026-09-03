@@ -142,19 +142,17 @@ export default function DemographicsView({ data, userDetails, onRetake }) {
                   key={item.key}
                   type="button"
                   onClick={() => setActualRace(item.key)}
-                  className={`w-full p-3.5 border text-left transition-all flex items-center justify-between group cursor-pointer ${
-                    isSelected
-                      ? 'border-white bg-[#151515] text-white'
-                      : 'border-[#1a1a1a] bg-black text-[#777777] hover:border-[#333333] hover:text-white'
-                  }`}
+                  className={`w-full p-3.5 border text-left transition-all flex items-center justify-between group cursor-pointer ${isSelected
+                    ? 'border-white bg-[#151515] text-white'
+                    : 'border-[#1a1a1a] bg-black text-[#777777] hover:border-[#333333] hover:text-white'
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-3.5 h-3.5 flex items-center justify-center border text-[9px] ${
-                        isSelected
-                          ? 'border-white bg-white text-black'
-                          : 'border-[#333333] group-hover:border-white'
-                      }`}
+                      className={`w-3.5 h-3.5 flex items-center justify-center border text-[9px] ${isSelected
+                        ? 'border-white bg-white text-black'
+                        : 'border-[#333333] group-hover:border-white'
+                        }`}
                     >
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
@@ -197,19 +195,17 @@ export default function DemographicsView({ data, userDetails, onRetake }) {
                   key={item.key}
                   type="button"
                   onClick={() => setActualAge(item.key)}
-                  className={`w-full p-3.5 border text-left transition-all flex items-center justify-between group cursor-pointer ${
-                    isSelected
-                      ? 'border-white bg-[#151515] text-white'
-                      : 'border-[#1a1a1a] bg-black text-[#777777] hover:border-[#333333] hover:text-white'
-                  }`}
+                  className={`w-full p-3.5 border text-left transition-all flex items-center justify-between group cursor-pointer ${isSelected
+                    ? 'border-white bg-[#151515] text-white'
+                    : 'border-[#1a1a1a] bg-black text-[#777777] hover:border-[#333333] hover:text-white'
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-3.5 h-3.5 flex items-center justify-center border text-[9px] ${
-                        isSelected
-                          ? 'border-white bg-white text-black'
-                          : 'border-[#333333] group-hover:border-white'
-                      }`}
+                      className={`w-3.5 h-3.5 flex items-center justify-center border text-[9px] ${isSelected
+                        ? 'border-white bg-white text-black'
+                        : 'border-[#333333] group-hover:border-white'
+                        }`}
                     >
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
@@ -251,19 +247,17 @@ export default function DemographicsView({ data, userDetails, onRetake }) {
                   key={item.key}
                   type="button"
                   onClick={() => setActualGender(item.key)}
-                  className={`w-full p-3.5 border text-left transition-all flex items-center justify-between group cursor-pointer ${
-                    isSelected
-                      ? 'border-white bg-[#151515] text-white'
-                      : 'border-[#1a1a1a] bg-black text-[#777777] hover:border-[#333333] hover:text-white'
-                  }`}
+                  className={`w-full p-3.5 border text-left transition-all flex items-center justify-between group cursor-pointer ${isSelected
+                    ? 'border-white bg-[#151515] text-white'
+                    : 'border-[#1a1a1a] bg-black text-[#777777] hover:border-[#333333] hover:text-white'
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-3.5 h-3.5 flex items-center justify-center border text-[9px] ${
-                        isSelected
-                          ? 'border-white bg-white text-black'
-                          : 'border-[#333333] group-hover:border-white'
-                      }`}
+                      className={`w-3.5 h-3.5 flex items-center justify-center border text-[9px] ${isSelected
+                        ? 'border-white bg-white text-black'
+                        : 'border-[#333333] group-hover:border-white'
+                        }`}
                     >
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
@@ -289,5 +283,4 @@ export default function DemographicsView({ data, userDetails, onRetake }) {
       </div>
     </div>
   );
-}
 }
