@@ -78,17 +78,17 @@ export default function Phase2Upload({ onNext, onBack, userDetails }) {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="max-w-4xl mx-auto px-6 py-12">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-            Phase 2 • Level 2
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-3 mb-1 tracking-tight">
-            Upload Your Face Image
+          <div className="inline-block px-2.5 py-1 bg-[#151515] border border-[#282828] text-[10px] font-mono tracking-[0.2em] text-[#888888] uppercase mb-2">
+            LEVEL 2 • FILE SCAN
+          </div>
+          <h1 className="text-3xl font-extrabold text-white tracking-tight uppercase">
+            Upload Portrait
           </h1>
-          <p className="text-sm text-[#9ca3af]">
-            Convert image to Base64 and run AI demographics prediction (Race, Age, Gender).
+          <p className="text-xs font-mono text-[#777777] mt-1 tracking-wide uppercase">
+            Convert image to Base64 and run AI demographics analysis
           </p>
         </div>
 
@@ -96,17 +96,17 @@ export default function Phase2Upload({ onNext, onBack, userDetails }) {
           <button
             type="button"
             onClick={onBack}
-            className="px-4 py-2.5 rounded-xl border border-[#232938] text-xs font-semibold text-[#9ca3af] hover:text-white hover:bg-[#181c29] transition-all flex items-center gap-2"
+            className="px-4 py-2.5 border border-[#222222] text-[11px] font-mono tracking-widest text-[#777777] hover:text-white hover:border-[#444444] transition-all flex items-center gap-2 uppercase cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Phase 1
+            Phase 1
           </button>
           <button
             type="button"
             onClick={onNext}
-            className="px-4 py-2.5 rounded-xl bg-purple-600/20 border border-purple-500/40 text-purple-300 hover:bg-purple-600/30 text-xs font-semibold transition-all flex items-center gap-2"
+            className="px-4 py-2.5 border border-white/20 bg-white/5 text-white hover:bg-white/10 text-[11px] font-mono tracking-widest transition-all flex items-center gap-2 uppercase cursor-pointer"
           >
-            Phase 3: Take Selfie
+            Phase 3: Camera
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -114,15 +114,15 @@ export default function Phase2Upload({ onNext, onBack, userDetails }) {
 
       {/* Main Container */}
       {!demographicsData ? (
-        <div className="bg-[#12151f] border border-[#1e2330] rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
-          <div className="max-w-xl mx-auto space-y-6">
+        <div className="border border-[#222222] bg-[#080808] p-8 sm:p-12">
+          <div className="max-w-xl mx-auto space-y-8">
             {/* Drag & Drop Box */}
             <div
               onDrop={handleDrop}
               onDragOver={handleDragOver}
-              className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all flex flex-col items-center justify-center min-h-[260px] cursor-pointer relative overflow-hidden ${preview
-                  ? 'border-indigo-500/50 bg-[#0d0f17]'
-                  : 'border-[#232938] hover:border-indigo-500/40 bg-[#0d0f17]/60 hover:bg-[#0d0f17]'
+              className={`border border-dashed p-10 text-center transition-all flex flex-col items-center justify-center min-h-[280px] cursor-pointer relative ${preview
+                  ? 'border-white bg-black'
+                  : 'border-[#282828] hover:border-[#555555] bg-black/60'
                 }`}
             >
               <input
@@ -137,46 +137,46 @@ export default function Phase2Upload({ onNext, onBack, userDetails }) {
                   <img
                     src={preview}
                     alt="Uploaded Preview"
-                    className="w-40 h-40 object-cover rounded-2xl mx-auto shadow-xl border-2 border-indigo-500/30"
+                    className="w-44 h-44 object-cover border border-[#333333] mx-auto grayscale hover:grayscale-0 transition-all"
                   />
                   <div>
-                    <p className="text-xs font-semibold text-indigo-300">{file?.name}</p>
-                    <p className="text-[11px] text-[#6b7280]">Click or drag to replace image</p>
+                    <p className="text-xs font-mono text-white tracking-wider uppercase">{file?.name}</p>
+                    <p className="text-[10px] font-mono text-[#666666] uppercase mt-1">CLICK OR DRAG TO REPLACE</p>
                   </div>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mx-auto">
-                    <UploadCloud className="w-8 h-8" />
+                <div className="space-y-4">
+                  <div className="w-14 h-14 border border-[#333333] bg-[#111111] flex items-center justify-center text-white mx-auto">
+                    <UploadCloud className="w-7 h-7" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-white mb-1">
-                      Drag & Drop your face photo here
+                    <p className="text-xs font-mono font-bold text-white uppercase tracking-widest mb-1">
+                      DRAG & DROP PORTRAIT HERE
                     </p>
-                    <p className="text-xs text-[#9ca3af]">
-                      or <span className="text-indigo-400 font-semibold underline">browse files</span> from your computer
+                    <p className="text-[11px] font-mono text-[#777777] uppercase">
+                      OR <span className="text-white underline">BROWSE LOCAL FILES</span>
                     </p>
                   </div>
-                  <p className="text-[11px] text-[#6b7280]">Supports PNG, JPG, WEBP formats</p>
+                  <p className="text-[10px] font-mono text-[#555555] uppercase">FORMATS: PNG, JPG, WEBP</p>
                 </div>
               )}
             </div>
 
             {apiError && (
-              <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <div className="p-4 border border-red-500/40 bg-red-950/20 text-red-400 font-mono text-xs flex items-start gap-3 uppercase">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                 <span>{apiError}</span>
               </div>
             )}
 
-            <div className="flex items-center justify-end gap-3 pt-2">
+            <div className="flex items-center justify-end gap-4 pt-2">
               {preview && (
                 <button
                   type="button"
                   onClick={handleResetImage}
-                  className="px-4 py-2.5 rounded-xl border border-[#232938] text-xs font-semibold text-[#9ca3af] hover:text-white hover:bg-[#181c29] transition-all"
+                  className="px-5 py-3 border border-[#222222] text-[11px] font-mono tracking-widest text-[#777777] hover:text-white hover:border-[#444444] transition-all uppercase cursor-pointer"
                 >
-                  Clear Image
+                  CLEAR FILE
                 </button>
               )}
 
@@ -184,17 +184,17 @@ export default function Phase2Upload({ onNext, onBack, userDetails }) {
                 type="button"
                 onClick={handleSubmit}
                 disabled={!base64String || loading}
-                className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2"
+                className="px-8 py-4 bg-white text-black hover:bg-[#e0e0e0] disabled:bg-[#222222] disabled:text-[#555555] disabled:cursor-not-allowed text-xs font-mono font-bold uppercase tracking-widest transition-all flex items-center gap-3 cursor-pointer"
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Scanning Demographics...
+                    ANALYZING...
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    Analyze Image (Level 2 API)
+                    ANALYZE DEMOGRAPHICS
                   </>
                 )}
               </button>

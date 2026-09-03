@@ -128,36 +128,36 @@ export default function Phase3Selfie({ onBack, userDetails }) {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="max-w-4xl mx-auto px-6 py-12">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
-            Phase 3 • Level 3
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-3 mb-1 tracking-tight">
-            Take a Live Selfie
+          <div className="inline-block px-2.5 py-1 bg-[#151515] border border-[#282828] text-[10px] font-mono tracking-[0.2em] text-[#888888] uppercase mb-2">
+            LEVEL 3 • LIVE STREAM
+          </div>
+          <h1 className="text-3xl font-extrabold text-white tracking-tight uppercase">
+            Capture Selfie
           </h1>
-          <p className="text-sm text-[#9ca3af]">
-            Use your device camera to capture a live snapshot and analyze AI demographics.
+          <p className="text-xs font-mono text-[#777777] mt-1 tracking-wide uppercase">
+            Use your camera to capture a portrait frame for AI demographics scan
           </p>
         </div>
 
         <button
           type="button"
           onClick={onBack}
-          className="self-start sm:self-auto px-4 py-2.5 rounded-xl border border-[#232938] text-xs font-semibold text-[#9ca3af] hover:text-white hover:bg-[#181c29] transition-all flex items-center gap-2"
+          className="self-start sm:self-auto px-4 py-2.5 border border-[#222222] text-[11px] font-mono tracking-widest text-[#777777] hover:text-white hover:border-[#444444] transition-all flex items-center gap-2 uppercase cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Phase 2
+          Phase 2
         </button>
       </div>
 
       {/* Main Container */}
       {!demographicsData ? (
-        <div className="bg-[#12151f] border border-[#1e2330] rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
-          <div className="max-w-xl mx-auto space-y-6">
+        <div className="border border-[#222222] bg-[#080808] p-8 sm:p-12">
+          <div className="max-w-xl mx-auto space-y-8">
             {/* Camera Viewport */}
-            <div className="relative rounded-2xl bg-[#0d0f17] border border-[#232938] overflow-hidden min-h-[300px] flex items-center justify-center">
+            <div className="relative border border-[#282828] bg-black overflow-hidden min-h-[320px] flex items-center justify-center">
               {/* Hidden Canvas used for raster capture */}
               <canvas ref={canvasRef} className="hidden" />
 
@@ -171,9 +171,9 @@ export default function Phase3Selfie({ onBack, userDetails }) {
                     className={`w-full h-full object-cover ${facingMode === 'user' ? 'scale-x-[-1]' : ''
                       }`}
                   />
-                  {/* Facial Alignment Oval Overlay */}
+                  {/* Minimalist Facial Alignment Overlay */}
                   <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                    <div className="w-48 h-64 border-2 border-dashed border-purple-400/60 rounded-full shadow-[0_0_50px_rgba(168,85,247,0.2)]" />
+                    <div className="w-48 h-64 border border-dashed border-white/60 rounded-full" />
                   </div>
                 </div>
               )}
@@ -183,31 +183,31 @@ export default function Phase3Selfie({ onBack, userDetails }) {
                   <img
                     src={capturedImage}
                     alt="Captured Selfie"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all"
                   />
                 </div>
               )}
 
               {!cameraActive && !capturedImage && (
-                <div className="p-8 text-center space-y-4">
-                  <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mx-auto">
-                    <Camera className="w-8 h-8" />
+                <div className="p-10 text-center space-y-4">
+                  <div className="w-14 h-14 border border-[#333333] bg-[#111111] flex items-center justify-center text-white mx-auto">
+                    <Camera className="w-7 h-7" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-white mb-1">
-                      Webcam / Camera Stream
+                    <p className="text-xs font-mono font-bold text-white uppercase tracking-widest mb-1">
+                      CAMERA FEED DISCONNECTED
                     </p>
-                    <p className="text-xs text-[#9ca3af]">
-                      Click below to enable your browser camera.
+                    <p className="text-[11px] font-mono text-[#777777] uppercase">
+                      CLICK BELOW TO REQUEST WEBCAM ACCESS
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => startCamera(facingMode)}
-                    className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-purple-600/20 inline-flex items-center gap-2"
+                    className="px-8 py-3.5 bg-white text-black hover:bg-[#e0e0e0] text-xs font-mono font-bold uppercase tracking-widest transition-all inline-flex items-center gap-3 cursor-pointer"
                   >
                     <Camera className="w-4 h-4" />
-                    Start Camera
+                    ENABLE CAMERA
                   </button>
                 </div>
               )}
@@ -215,39 +215,39 @@ export default function Phase3Selfie({ onBack, userDetails }) {
 
             {/* Error alerts */}
             {cameraError && (
-              <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <div className="p-4 border border-red-500/40 bg-red-950/20 text-red-400 font-mono text-xs flex items-start gap-3 uppercase">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                 <span>{cameraError}</span>
               </div>
             )}
 
             {apiError && (
-              <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <div className="p-4 border border-red-500/40 bg-red-950/20 text-red-400 font-mono text-xs flex items-start gap-3 uppercase">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                 <span>{apiError}</span>
               </div>
             )}
 
             {/* Controls */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
               {cameraActive && !capturedImage && (
                 <>
                   <button
                     type="button"
                     onClick={toggleFacingMode}
-                    className="px-4 py-2.5 rounded-xl border border-[#232938] text-xs font-semibold text-[#9ca3af] hover:text-white hover:bg-[#181c29] transition-all flex items-center gap-1.5"
+                    className="px-5 py-3 border border-[#222222] text-[11px] font-mono tracking-widest text-[#777777] hover:text-white hover:border-[#444444] transition-all flex items-center gap-2 uppercase cursor-pointer"
                   >
                     <SwitchCamera className="w-4 h-4" />
-                    Switch Camera
+                    TOGGLE CAMERA
                   </button>
 
                   <button
                     type="button"
                     onClick={takeSelfie}
-                    className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-purple-600/20 flex items-center gap-2"
+                    className="px-8 py-4 bg-white text-black hover:bg-[#e0e0e0] text-xs font-mono font-bold uppercase tracking-widest transition-all flex items-center gap-3 cursor-pointer"
                   >
                     <Camera className="w-4 h-4" />
-                    Capture Snapshot
+                    CAPTURE SNAPSHOT
                   </button>
                 </>
               )}
@@ -257,27 +257,27 @@ export default function Phase3Selfie({ onBack, userDetails }) {
                   <button
                     type="button"
                     onClick={handleRetakeSelfie}
-                    className="px-4 py-2.5 rounded-xl border border-[#232938] text-xs font-semibold text-[#9ca3af] hover:text-white hover:bg-[#181c29] transition-all flex items-center gap-1.5"
+                    className="px-5 py-3 border border-[#222222] text-[11px] font-mono tracking-widest text-[#777777] hover:text-white hover:border-[#444444] transition-all flex items-center gap-2 uppercase cursor-pointer"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
-                    Retake Selfie
+                    RETAKE
                   </button>
 
                   <button
                     type="button"
                     onClick={handleSubmitSelfie}
                     disabled={loading}
-                    className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-purple-600/20 flex items-center gap-2"
+                    className="px-8 py-4 bg-white text-black hover:bg-[#e0e0e0] disabled:bg-[#222222] disabled:text-[#555555] disabled:cursor-not-allowed text-xs font-mono font-bold uppercase tracking-widest transition-all flex items-center gap-3 cursor-pointer"
                   >
                     {loading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Scanning Demographics...
+                        PROCESSING...
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4" />
-                        Analyze Selfie (Level 2 API)
+                        ANALYZE SNAPSHOT
                       </>
                     )}
                   </button>
