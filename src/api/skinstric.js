@@ -1,6 +1,6 @@
 export async function submitPhaseOne(name, location) {
   const response = await fetch(
-    'https://us-central1-frontend-simplified.cloudfunctions.net/skinstricPhaseOne',
+    '/skinstric-api/skinstricPhaseOne',
     {
       method: 'POST',
       headers: {
@@ -24,7 +24,7 @@ export async function submitPhaseTwo(base64Image) {
     : base64Image;
 
   const response = await fetch(
-    'https://us-central1-frontend-simplified.cloudfunctions.net/skinstricPhaseTwo',
+    '/skinstric-api/skinstricPhaseTwo',
     {
       method: 'POST',
       headers: {

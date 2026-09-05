@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { User, MapPin, ArrowRight, AlertCircle, CheckCircle2, Loader2, RefreshCw } from 'lucide-react';
-import { submitPhaseOne } from '../api/skinstric.js';
+import React, { useState } from 'react';
+import { User, MapPin, ArrowRight, AlertCircle, Check, Loader2, RotateCcw } from 'lucide-react';
 
 export default function Phase1Form({ onNext, onSaveUser, initialUser }) {
   const [name, setName] = useState(initialUser?.name || '');
@@ -75,22 +74,13 @@ export default function Phase1Form({ onNext, onSaveUser, initialUser }) {
 
     if (!isNameValid || !isLocValid) return;
 
-    setLoading(true);
     setApiError('');
     setApiResponse(null);
 
-    try {
-      const res = await submitPhaseOne(name.trim(), location.trim());
-      setApiResponse(res);
-
-      const userData = { name: name.trim(), location: location.trim() };
-      localStorage.setItem('skinstric_user', JSON.stringify(userData));
-      onSaveUser(userData);
-    } catch (err) {
-      setApiError(err.message || 'Error submitting data to Level 1 API.');
-    } finally {
-      setLoading(false);
-    }
+    const userData = { name: name.trim(), location: location.trim() };
+    localStorage.setItem('skinstric_user', JSON.stringify(userData));
+    onSaveUser(userData);
+    setApiResponse({ success: 'Profile saved. Continue to Level 2.' });
   };
 
   const isFormValid =
@@ -133,8 +123,8 @@ export default function Phase1Form({ onNext, onSaveUser, initialUser }) {
                 onChange={handleNameChange}
                 placeholder="ENTER YOUR FULL NAME"
                 className={`w-full pl-11 pr-4 py-4 bg-black border text-white font-mono text-xs tracking-wider placeholder-[#444444] focus:outline-none transition-all uppercase ${nameError
-                    ? 'border-red-500/80 focus:border-red-500'
-                    : 'border-[#222222] focus:border-white'
+                  ? 'border-red-500/80 focus:border-red-500'
+                  : 'border-[#222222] focus:border-white'
                   }`}
               />
             </div>
@@ -162,8 +152,8 @@ export default function Phase1Form({ onNext, onSaveUser, initialUser }) {
                 onChange={handleLocationChange}
                 placeholder="ENTER YOUR LOCATION"
                 className={`w-full pl-11 pr-4 py-4 bg-black border text-white font-mono text-xs tracking-wider placeholder-[#444444] focus:outline-none transition-all uppercase ${locationError
-                    ? 'border-red-500/80 focus:border-red-500'
-                    : 'border-[#222222] focus:border-white'
+                  ? 'border-red-500/80 focus:border-red-500'
+                  : 'border-[#222222] focus:border-white'
                   }`}
               />
             </div>
@@ -189,7 +179,7 @@ export default function Phase1Form({ onNext, onSaveUser, initialUser }) {
               <Check className="w-4 h-4 text-white shrink-0 mt-0.5 stroke-[3]" />
               <div>
                 <p className="font-bold text-white mb-1">STATUS: SUCCESS</p>
-                <p className="text-[#888888]">{apiResponse.SUCCUSS || JSON.stringify(apiResponse)}</p>
+                <p className="text-[#888888]">{apiResponse.success || JSON.stringify(apiResponse)}</p>
               </div>
             </div>
           )}
