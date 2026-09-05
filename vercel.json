@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/skinstric-api/:path*",
+      "destination": "https://us-central1-frontend-simplified.cloudfunctions.net/:path*"
+    }
+  ]
+}
