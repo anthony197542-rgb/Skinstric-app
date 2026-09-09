@@ -1,298 +1,59 @@
 import React, { useState } from 'react';
-import { Sparkles, Check, UserCheck, RefreshCcw } from 'lucide-react';
 
-export default function DemographicsView({ data, userDetails, onRetake, onNext }) {
-  // Extract AI prediction objects
-  const rawRace = data?.race || data?.skin_tone || data?.skinTone || {};
-  const rawAge = data?.age || data?.age_bracket || data?.ageBracket || {};
-  const rawGender = data?.gender || data?.sex || {};
+export default function DemographicsView({ data, onRetake }) {
+  const sortPredictions = (values) => Object.entries(values || {})
+    .map(([key, value]) => ({ key, value: Number(value) || 0 }))
+    .sort((a, b) => b.value - a.value);
 
-  // Sort categories in descending order of confidence score
-  const sortDescending = (obj) => {
-    return Object.entries(obj)
-      .map(([key, value]) => ({
-        key,
-        value: Number(value) || 0,
-        formattedPercent: (Number(value) * 100).toFixed(2) + '%',
-      }))
-      .sort((a, b) => b.value - a.value);
+  const predictions = {
+    race: sortPredictions(data?.race || data?.skin_tone || data?.skinTone),
+    age: sortPredictions(data?.age || data?.age_bracket || data?.ageBracket),
+    gender: sortPredictions(data?.gender || data?.sex),
+  };
+  const labels = { race: 'RACE', age: 'AGE', gender: 'SEX' };
+  const [activeType, setActiveType] = useState('race');
+  const [selected, setSelected] = useState({
+    race: predictions.race[0],
+    age: predictions.age[0],
+    gender: predictions.gender[0],
+  });
+  const activePrediction = selected[activeType] || predictions[activeType][0] || { key: 'Unknown', value: 0 };
+  const activeList = predictions[activeType];
+  const formatLabel = (value) => value.replace(/[-_]/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+  const percentage = (value) => `${Math.round(value * 100)}%`;
+
+  const choosePrediction = (item) => {
+    setSelected((current) => ({ ...current, [activeType]: item }));
   };
 
-  const sortedRace = sortDescending(rawRace);
-  const sortedAge = sortDescending(rawAge);
-  const sortedGender = sortDescending(rawGender);
+  return <div className="demographics-reference">
+    <div className="demographics-sidebar">
+      {Object.keys(labels).map((type) => {
+        const item = selected[type] || predictions[type][0] || { key: 'Unknown' };
+        return <button className={activeType === type ? 'active' : ''} type="button" key={type} onClick={() => setActiveType(type)}>
+          <strong>{formatLabel(item.key)}</strong>
+          <span>{labels[type]}</span>
+        </button>;
+      })}
+    </div>
 
-  // Top predicted defaults
-  const defaultTopRace = sortedRace[0]?.key || 'Unknown';
-  const defaultTopAge = sortedAge[0]?.key || 'Unknown';
-  const defaultTopGender = sortedGender[0]?.key || 'Unknown';
-
-  // Confirmed profile details take precedence only when explicitly supplied.
-  const [actualRace, setActualRace] = useState(userDetails?.race || defaultTopRace);
-  const [actualAge, setActualAge] = useState(userDetails?.age || defaultTopAge);
-  const [actualGender, setActualGender] = useState(userDetails?.gender || defaultTopGender);
-  const [confirmedAge, setConfirmedAge] = useState('');
-
-  // Capitalize strings
-  const formatLabel = (str) => {
-    if (!str) return '';
-    return str
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      {/* LEFT SIDEBAR BLOCK: Actual Attributes (Updated interactively when user clicks any score) */}
-      <div className="lg:col-span-4 border border-[#222222] bg-[#080808] p-6 space-y-6">
-        <div className="flex items-center gap-3 pb-4 border-b border-[#222222]">
-          <div className="p-2 border border-[#333333] bg-[#111111] text-white">
-            <UserCheck className="w-4 h-4" />
-          </div>
-          <div>
-            <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-white">AI ESTIMATE</h2>
-            <p className="text-[10px] font-mono text-[#666666] uppercase mt-0.5">BASED ON THIS PORTRAIT</p>
-          </div>
-        </div>
-
-        {/* User Card */}
-        {userDetails && (
-          <div className="p-3 border border-[#1f1f1f] bg-[#0c0c0c] font-mono text-[11px] space-y-1 uppercase">
-            <p className="text-white font-bold">{userDetails.name}</p>
-            <p className="text-[#666666]">{userDetails.location}</p>
-          </div>
-        )}
-
-        <div className="space-y-4 font-mono text-xs">
-          {/* Race Block */}
-          <div className="p-4 border border-[#222222] bg-black">
-            <div className="flex items-center justify-between text-[#777777] mb-1">
-              <span className="font-bold uppercase text-[10px] tracking-widest">SKIN TONE / RACE</span>
-            </div>
-            <p className="text-base font-bold text-white uppercase">{formatLabel(actualRace)}</p>
-            <p className="text-[10px] text-[#555555] mt-1 uppercase">
-              AI CONFIDENCE: <span className="text-[#999999]">{(sortedRace[0]?.value * 100 || 0).toFixed(2)}%</span>
-            </p>
-          </div>
-
-          {/* Age Block */}
-          <div className="p-4 border border-[#222222] bg-black">
-            <div className="flex items-center justify-between text-[#777777] mb-1">
-              <span className="font-bold uppercase text-[10px] tracking-widest">CLOSEST AGE BRACKET</span>
-            </div>
-            <p className="text-base font-bold text-white uppercase">{actualAge} YEARS</p>
-            <p className="text-[10px] text-[#555555] mt-1 uppercase">
-              AI CONFIDENCE: <span className="text-[#999999]">{(sortedAge[0]?.value * 100 || 0).toFixed(2)}%</span>
-            </p>
-            <label className="mt-3 block text-[9px] uppercase tracking-wider text-[#777777]">
-              Correct exact age
-              <input
-                type="number"
-                min="1"
-                max="120"
-                value={confirmedAge}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  setConfirmedAge(value);
-                  if (value) setActualAge(value);
-                }}
-                placeholder="OPTIONAL"
-                className="mt-1 w-full border border-[#333333] bg-black px-2 py-2 text-xs text-white outline-none"
-              />
-            </label>
-          </div>
-
-          {/* Gender Block */}
-          <div className="p-4 border border-[#222222] bg-black">
-            <div className="flex items-center justify-between text-[#777777] mb-1">
-              <span className="font-bold uppercase text-[10px] tracking-widest">GENDER</span>
-            </div>
-            <p className="text-base font-bold text-white uppercase">{formatLabel(actualGender)}</p>
-            <p className="text-[10px] text-[#555555] mt-1 uppercase">
-              AI CONFIDENCE: <span className="text-[#999999]">{(sortedGender[0]?.value * 100 || 0).toFixed(2)}%</span>
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          {onNext && (
-            <button
-              onClick={onNext}
-              className="proceed-analysis-button"
-            >
-              PROCEED TO ANALYSIS
-            </button>
-          )}
-          <button
-            onClick={onRetake}
-            className="w-full py-3 border border-[#222222] font-mono text-[11px] tracking-widest text-[#888888] hover:text-white hover:border-[#444444] transition-all flex items-center justify-center gap-2 uppercase cursor-pointer"
-          >
-            <RefreshCcw className="w-3.5 h-3.5" />
-            TEST ANOTHER PORTRAIT
-          </button>
-        </div>
-      </div>
-
-      {/* RIGHT MAIN BLOCK: Sorted AI Predicted Demographics (Descending order, 2 Decimal Places) */}
-      <div className="lg:col-span-8 space-y-8">
-        {/* Race Category */}
-        <div className="border border-[#222222] bg-[#080808] p-6 sm:p-8">
-          <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#222222]">
-            <h3 className="text-xs font-mono font-bold text-white uppercase tracking-widest flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-white" />
-              01. PREDICTED RACE DISTRIBUTION
-            </h3>
-            <span className="text-[10px] font-mono text-[#666666] uppercase">DESCENDING</span>
-          </div>
-
-          <div className="space-y-3 font-mono">
-            {sortedRace.map((item) => {
-              const isSelected = actualRace === item.key;
-              return (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={() => setActualRace(item.key)}
-                  className={`w-full p-3.5 border text-left transition-all flex items-center justify-between group cursor-pointer ${isSelected
-                    ? 'border-white bg-[#151515] text-white'
-                    : 'border-[#1a1a1a] bg-black text-[#777777] hover:border-[#333333] hover:text-white'
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-3.5 h-3.5 flex items-center justify-center border text-[9px] ${isSelected
-                        ? 'border-white bg-white text-black'
-                        : 'border-[#333333] group-hover:border-white'
-                        }`}
-                    >
-                      {isSelected && <Check className="w-3 h-3 stroke-3" />}
-                    </div>
-                    <span className="text-xs font-bold uppercase tracking-wider">{formatLabel(item.key)}</span>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    {/* Progress bar */}
-                    <div className="w-24 sm:w-40 h-1.5 bg-[#1a1a1a] overflow-hidden">
-                      <div
-                        className="h-full bg-white transition-all duration-500"
-                        style={{ width: item.formattedPercent }}
-                      />
-                    </div>
-                    <span className="text-xs font-bold w-16 text-right text-white">
-                      {item.formattedPercent}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Age Category */}
-        <div className="border border-[#222222] bg-[#080808] p-6 sm:p-8">
-          <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#222222]">
-            <h3 className="text-xs font-mono font-bold text-white uppercase tracking-widest flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-white" />
-              02. PREDICTED AGE BRACKET
-            </h3>
-            <span className="text-[10px] font-mono text-[#666666] uppercase">DESCENDING</span>
-          </div>
-
-          <div className="space-y-3 font-mono">
-            {sortedAge.map((item) => {
-              const isSelected = actualAge === item.key;
-              return (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={() => setActualAge(item.key)}
-                  className={`w-full p-3.5 border text-left transition-all flex items-center justify-between group cursor-pointer ${isSelected
-                    ? 'border-white bg-[#151515] text-white'
-                    : 'border-[#1a1a1a] bg-black text-[#777777] hover:border-[#333333] hover:text-white'
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-3.5 h-3.5 flex items-center justify-center border text-[9px] ${isSelected
-                        ? 'border-white bg-white text-black'
-                        : 'border-[#333333] group-hover:border-white'
-                        }`}
-                    >
-                      {isSelected && <Check className="w-3 h-3 stroke-3" />}
-                    </div>
-                    <span className="text-xs font-bold uppercase tracking-wider">{item.key} YEARS</span>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="w-24 sm:w-40 h-1.5 bg-[#1a1a1a] overflow-hidden">
-                      <div
-                        className="h-full bg-white transition-all duration-500"
-                        style={{ width: item.formattedPercent }}
-                      />
-                    </div>
-                    <span className="text-xs font-bold w-16 text-right text-white">
-                      {item.formattedPercent}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Gender Category */}
-        <div className="border border-[#222222] bg-[#080808] p-6 sm:p-8">
-          <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#222222]">
-            <h3 className="text-xs font-mono font-bold text-white uppercase tracking-widest flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-white" />
-              03. PREDICTED GENDER
-            </h3>
-            <span className="text-[10px] font-mono text-[#666666] uppercase">DESCENDING</span>
-          </div>
-
-          <div className="space-y-3 font-mono">
-            {sortedGender.map((item) => {
-              const isSelected = actualGender === item.key;
-              return (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={() => setActualGender(item.key)}
-                  className={`w-full p-3.5 border text-left transition-all flex items-center justify-between group cursor-pointer ${isSelected
-                    ? 'border-white bg-[#151515] text-white'
-                    : 'border-[#1a1a1a] bg-black text-[#777777] hover:border-[#333333] hover:text-white'
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-3.5 h-3.5 flex items-center justify-center border text-[9px] ${isSelected
-                        ? 'border-white bg-white text-black'
-                        : 'border-[#333333] group-hover:border-white'
-                        }`}
-                    >
-                      {isSelected && <Check className="w-3 h-3 stroke-3" />}
-                    </div>
-                    <span className="text-xs font-bold uppercase tracking-wider">{formatLabel(item.key)}</span>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="w-24 sm:w-40 h-1.5 bg-[#1a1a1a] overflow-hidden">
-                      <div
-                        className="h-full bg-white transition-all duration-500"
-                        style={{ width: item.formattedPercent }}
-                      />
-                    </div>
-                    <span className="text-xs font-bold w-16 text-right text-white">
-                      {item.formattedPercent}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+    <div className="demographics-main">
+      <h2>{formatLabel(activePrediction.key)}</h2>
+      <div className="confidence-ring" style={{ '--confidence': `${activePrediction.value * 360}deg` }}>
+        <span>{percentage(activePrediction.value)}</span>
       </div>
     </div>
-  );
+
+    <div className="demographics-list">
+      <div className="demographics-list-header"><span>{labels[activeType]}</span><span>A.I. CONFIDENCE</span></div>
+      {activeList.map((item) => <button className={activePrediction.key === item.key ? 'selected' : ''} type="button" key={item.key} onClick={() => choosePrediction(item)}>
+        <span className="demographics-bullet">◇</span>
+        <span>{formatLabel(item.key)}</span>
+        <strong>{percentage(item.value)}</strong>
+      </button>)}
+    </div>
+
+    <p className="demographics-note">If A.I. estimate is wrong, select the correct one.</p>
+    <button className="demographics-retake" type="button" onClick={onRetake}>TEST ANOTHER PORTRAIT</button>
+  </div>;
 }

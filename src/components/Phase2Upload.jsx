@@ -58,7 +58,7 @@ export default function Phase2Upload({ onNext, onBack, userDetails }) {
     try {
       const res = await submitPhaseTwo(base64String);
       if (res && res.data) {
-        setDemographicsData(res.data);
+        onNext?.(res.data);
       } else {
         throw new Error('Invalid API response shape.');
       }

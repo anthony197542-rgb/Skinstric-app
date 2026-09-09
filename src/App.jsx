@@ -73,7 +73,7 @@ export default function App() {
   return (
     <div className="skinstric-app">
       <main>
-        {(screen === 'testing' || screen === 'processing' || screen === 'thank-you') && (
+        {(screen === 'testing' || screen === 'processing' || screen === 'thank-you' || screen === 'result' || screen === 'select' || screen === 'summary' || screen === 'camera' || screen === 'gallery') && (
           <ReferenceHeader onHome={goHome} onEnter={beginTesting} />
         )}
         {screen === 'intro' && (
@@ -84,13 +84,13 @@ export default function App() {
               <div className="intro-diamond intro-diamond-inner" aria-hidden="true" />
 
               <button className="intro-side-action intro-discover" type="button">
-                <span className="intro-mark" aria-hidden="true"><span>‹</span></span>
+                <span className="intro-mark" aria-hidden="true"><span /></span>
                 <span>DISCOVER A.I.</span>
               </button>
 
               <button className="intro-side-action intro-test" type="button" onClick={beginTesting}>
                 <span>TAKE TEST</span>
-                <span className="intro-mark" aria-hidden="true"><span>›</span></span>
+                <span className="intro-mark" aria-hidden="true"><span /></span>
               </button>
 
               <div className="intro-content">
@@ -131,7 +131,7 @@ export default function App() {
         {screen === 'gallery' && <Phase2Upload userDetails={{ name, location }} onBack={() => setScreen('result')} onNext={(data) => { setSkincareData(data); setScreen('select'); }} />}
         {screen === 'skincare' && <SkincareReveal data={skincareData} userDetails={{ name, location }} onBack={() => setScreen('camera')} onHome={goHome} />}
         {screen === 'select' && <SelectScreen onBack={() => setScreen('result')} onSelectCategory={(category) => { setAnalysisCategory(category); setScreen('summary'); }} />}
-        {screen === 'summary' && <SummaryScreen category={analysisCategory} data={skincareData} userDetails={{ name, location }} onBack={() => setScreen('select')} onRetake={() => setScreen('result')} />}
+        {screen === 'summary' && <SummaryScreen category={analysisCategory} data={skincareData} userDetails={{ name, location }} onBack={() => setScreen('select')} onRetake={() => setScreen('result')} onHome={goHome} />}
       </main>
     </div>
   );
@@ -183,23 +183,32 @@ function SelectScreen({ onBack, onSelectCategory }) {
   const categoryDetails = {
     Demographics: 'Review the estimated age, gender, and skin profile from the portrait.',
     'Cosmetic Concerns': 'Review visible concern signals and prioritize the routine around them.',
-    'Skin Type': 'Review the skin profile used to guide cleansing, hydration, and active care.',
+    'Skin Type Details': 'Review the skin profile used to guide cleansing, hydration, and active care.',
     Weather: 'Adjust hydration and protection for the conditions around your location.',
   };
 
   const selectCategory = (label) => {
     setSelectedCategory(label);
-    onSelectCategory(label);
+    if (label === 'Demographics') onSelectCategory(label);
   };
 
-  return <section className="select-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><p className="select-copy">A.I. has estimated the following.<br />Fix estimated information if needed.</p></div><div className="select-options">{Object.keys(categoryDetails).map((label) => <button className={selectedCategory === label ? 'selected' : ''} type="button" key={label} onClick={() => selectCategory(label)}>{label}</button>)}</div><p className="select-detail">{categoryDetails[selectedCategory]}</p><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button></div></section>;
+  return <section className="select-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><p className="select-copy">A.I. HAS ESTIMATED THE FOLLOWING.<br />FIX ESTIMATED INFORMATION IF NEEDED.</p></div><div className="select-options">{Object.keys(categoryDetails).map((label) => <button className={selectedCategory === label ? 'selected' : ''} type="button" key={label} onClick={() => selectCategory(label)}><span>{label}</span></button>)}</div><p className="select-detail">{categoryDetails[selectedCategory]}</p><div className="select-actions"><button className="reference-diamond-button" type="button" onClick={onBack} aria-label="Back"><span className="result-back-arrow" /></button><span>BACK</span><strong>GET SUMMARY</strong><button className="reference-diamond-button" type="button" onClick={() => onSelectCategory(selectedCategory)} aria-label="Get summary"><span className="result-forward-arrow" /></button></div></section>;
 }
 
-function SummaryScreen({ category, data, userDetails, onBack, onRetake }) {
+function SummaryScreen({ category, data, userDetails, onBack, onRetake, onHome }) {
   return <section className="summary-screen">
     <div className="summary-heading"><p className="testing-heading">A.I. ANALYSIS</p><h1>{category.toUpperCase()}</h1><h2>{category === 'Demographics' ? 'PREDICTED RACE & AGE' : 'PERSONALIZED INSIGHTS'}</h2></div>
     {category === 'Demographics' ? <DemographicsView data={data} userDetails={userDetails} onRetake={onRetake} onNext={null} /> : <AnalysisDetail category={category} data={data} userDetails={userDetails} />}
-    <div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button></div>
+    <div className="summary-footer">
+      <button className="summary-footer-control" type="button" onClick={onBack}>
+        <span className="summary-footer-diamond" aria-hidden="true"><span className="result-back-arrow" /></span>
+        <span>BACK</span>
+      </button>
+      <button className="summary-footer-control summary-footer-home" type="button" onClick={onHome}>
+        <span>HOME</span>
+        <span className="summary-footer-diamond" aria-hidden="true"><span className="result-forward-arrow" /></span>
+      </button>
+    </div>
   </section>;
 }
 
@@ -210,7 +219,7 @@ function AnalysisDetail({ category, userDetails }) {
       copy: 'Review the areas that may need the most attention in your routine.',
       items: ['Texture and unevenness', 'Tone and visible discoloration', 'Hydration and sensitivity'],
     },
-    'Skin Type': {
+    'Skin Type Details': {
       title: 'SKIN PROFILE',
       copy: 'Use this profile to guide cleansing, hydration, and active care.',
       items: ['Daily hydration balance', 'Barrier support', 'Gentle active ingredients'],

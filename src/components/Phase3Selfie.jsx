@@ -23,11 +23,15 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
     setCapturedImage(null);
 
     // Stop existing stream if any
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-    }
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    setStream(null);
 
     try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error('CAMERA_UNSUPPORTED');
+      }
+
       const newStream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: mode,
@@ -46,20 +50,23 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
       }
     } catch (err) {
       console.error('Webcam error:', err);
-      setCameraError(
-        'Unable to access camera. Please allow camera permissions in your browser or try uploading an image in Phase 2.'
-      );
+      const message = err.name === 'NotReadableError'
+        ? 'Camera is already in use by another app or browser tab. Close it and try again.'
+        : err.message === 'CAMERA_UNSUPPORTED'
+          ? 'Camera access is not supported in this browser. Try uploading an image in Phase 2.'
+          : err.name === 'NotAllowedError'
+            ? 'Camera permission was blocked. Allow camera access in your browser, then try again.'
+            : 'Unable to access camera. Please allow camera permissions or try uploading an image in Phase 2.';
+      setCameraError(message);
       setCameraActive(false);
     }
   };
 
   // Stop video stream
   const stopCamera = () => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-      setStream(null);
-    }
+    streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
+    setStream(null);
     setCameraActive(false);
   };
 
@@ -112,7 +119,7 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
     try {
       const res = await submitPhaseTwo(capturedImage);
       if (res && res.data) {
-        setDemographicsData(res.data);
+        onNext?.(res.data);
       } else {
         throw new Error('Invalid response received from API.');
       }
@@ -131,8 +138,8 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div className="camera-screen max-w-4xl mx-auto px-6 py-12">
+      <div className="camera-page-heading flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <div className="inline-block px-2.5 py-1 bg-[#151515] border border-[#282828] text-[10px] font-mono tracking-[0.2em] text-[#888888] uppercase mb-2">
             LEVEL 3 • LIVE STREAM
@@ -146,9 +153,9 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
         </div>
 
         <button
+          className="camera-page-back self-start sm:self-auto px-4 py-2.5 border border-[#222222] text-[11px] font-mono tracking-widest text-[#777777] hover:text-white hover:border-[#444444] transition-all flex items-center gap-2 uppercase cursor-pointer"
           type="button"
           onClick={onBack}
-          className="self-start sm:self-auto px-4 py-2.5 border border-[#222222] text-[11px] font-mono tracking-widest text-[#777777] hover:text-white hover:border-[#444444] transition-all flex items-center gap-2 uppercase cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
           Phase 2
@@ -192,40 +199,29 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
               )}
 
               {!cameraActive && !capturedImage && (
-                <div className="p-10 text-center space-y-4">
-                  <div className="w-14 h-14 border border-[#333333] bg-[#111111] flex items-center justify-center text-white mx-auto">
-                    <Camera className="w-7 h-7" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-mono font-bold text-white uppercase tracking-widest mb-1">
-                      CAMERA FEED DISCONNECTED
-                    </p>
-                    <p className="text-[11px] font-mono text-[#777777] uppercase">
-                      CLICK BELOW TO REQUEST WEBCAM ACCESS
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => startCamera(facingMode)}
-                    className="px-8 py-3.5 bg-white text-black hover:bg-[#e0e0e0] text-xs font-mono font-bold uppercase tracking-widest transition-all inline-flex items-center gap-3 cursor-pointer"
-                  >
-                    <Camera className="w-4 h-4" />
-                    ENABLE CAMERA
+                <div className="camera-setup-state">
+                  <div className="camera-setup-diamonds" aria-hidden="true"><span /><span /></div>
+                  <div className="camera-aperture" aria-hidden="true"><span /></div>
+                  <p className="camera-setup-copy">SETTING UP CAMERA ...</p>
+                  <button type="button" onClick={() => startCamera(facingMode)} className="camera-enable-reference">
+                    <Camera className="w-3 h-3" /> ENABLE CAMERA
                   </button>
+                  <p className="camera-tips-title">TO GET BETTER RESULTS MAKE SURE TO HAVE</p>
+                  <div className="camera-tips"><span>◇ NEUTRAL EXPRESSION</span><span>◇ FRONTAL POSE</span><span>◇ ADEQUATE LIGHTING</span></div>
                 </div>
               )}
             </div>
 
             {/* Error alerts */}
             {cameraError && (
-              <div className="p-4 border border-red-500/40 bg-red-950/20 text-red-400 font-mono text-xs flex items-start gap-3 uppercase">
+              <div className="camera-error p-4 border border-red-500/40 bg-red-950/20 text-red-400 font-mono text-xs flex items-start gap-3 uppercase" role="alert">
                 <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                 <span>{cameraError}</span>
               </div>
             )}
 
             {apiError && (
-              <div className="p-4 border border-red-500/40 bg-red-950/20 text-red-400 font-mono text-xs flex items-start gap-3 uppercase">
+              <div className="camera-error p-4 border border-red-500/40 bg-red-950/20 text-red-400 font-mono text-xs flex items-start gap-3 uppercase" role="alert">
                 <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                 <span>{apiError}</span>
               </div>
