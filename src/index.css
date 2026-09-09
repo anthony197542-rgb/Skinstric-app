@@ -293,6 +293,37 @@ textarea {
   }
 }
 
+.skinstric-app {
+  color: #1a1b1c;
+  background: #fff;
+}
+
+.skinstric-app .bg-black,
+.skinstric-app .bg-black\/60,
+.skinstric-app .bg-\[\#080808\],
+.skinstric-app .bg-\[\#111111\],
+.skinstric-app .bg-\[\#151515\],
+.skinstric-app .bg-\[\#0d0d0d\] {
+  background: #fff !important;
+}
+
+.skinstric-app [class*="border-[#"],
+.skinstric-app [class*="border-black"],
+.skinstric-app [class*="border-white"] {
+  border-color: #1a1b1c !important;
+}
+
+.skinstric-app [class*="text-white"],
+.skinstric-app [class*="text-[#"] {
+  color: #1a1b1c !important;
+}
+
+.skinstric-app input,
+.skinstric-app textarea {
+  color: #1a1b1c !important;
+  background: #fff !important;
+}
+
 .reference-header {
   position: absolute;
   z-index: 10;
