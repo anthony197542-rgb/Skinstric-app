@@ -351,6 +351,26 @@ textarea {
   box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
 }
 
+.intro-frame::before,
+.intro-frame::after {
+  position: absolute;
+  top: 50%;
+  width: 350px;
+  height: 350px;
+  border: 1px solid #d6dbe0;
+  content: '';
+  pointer-events: none;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.intro-frame::before {
+  left: -265px;
+}
+
+.intro-frame::after {
+  right: -265px;
+}
+
 .intro-frame .reference-header {
   top: 18px;
   right: 18px;
@@ -374,7 +394,7 @@ textarea {
 }
 
 .intro-frame .intro-diamond-outer {
-  width: min(78vw, 900px);
+  display: none;
 }
 
 .intro-frame .intro-diamond-inner {
@@ -395,8 +415,8 @@ textarea {
 .intro-frame .intro-content p {
   position: absolute;
   right: auto;
-  bottom: 58px;
-  left: 54px;
+  bottom: 0;
+  left: 20px;
   width: 220px;
   margin: 0;
   color: #151515;
@@ -467,7 +487,7 @@ textarea {
 
   .intro-frame .intro-content p {
     right: 22px;
-    bottom: 48px;
+    bottom: 0;
     left: 22px;
     width: 180px;
   }
