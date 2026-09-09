@@ -832,6 +832,20 @@ textarea {
   cursor: pointer;
 }
 
+.select-options button.selected {
+  color: #fff;
+  background: #1a1b1c;
+}
+
+.select-detail {
+  max-width: 280px;
+  margin: 0 auto;
+  color: #777b83;
+  font-size: 8px;
+  line-height: 1.5;
+  text-align: center;
+}
+
 .summary-screen {
   gap: 18px;
 }
@@ -881,7 +895,7 @@ textarea {
 .summary-screen {
   height: 100vh;
   min-height: 0;
-  padding: 42px 5.5vw 30px;
+  padding: 96px 5.5vw 30px;
 }
 
 .status-screen>.testing-heading,
@@ -1904,7 +1918,7 @@ h1 em {
 .testing-screen {
   min-height: 100vh;
   height: 100vh;
-  padding: 92px 6vw 30px;
+  padding: 138px 6vw 30px;
 }
 
 .testing-screen .reference-header {
@@ -2014,7 +2028,7 @@ h1 em {
 
 @media (max-width: 640px) {
   .testing-screen {
-    padding: 92px 22px 28px;
+    padding: 118px 22px 28px;
   }
 
   .testing-stage {

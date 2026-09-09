@@ -156,7 +156,15 @@ function ResultScreen({ onBack, onCamera, onGallery, onNext }) {
 }
 
 function SelectScreen({ onBack, onNext }) {
-  return <section className="select-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><p className="select-copy">A.I. has estimated the following.<br />Fix estimated information if needed.</p></div><div className="select-options">{['Demographics', 'Cosmetic Concerns', 'Skin Type Details', 'Weather'].map((label, index) => <button type="button" key={label} onClick={index === 0 ? onNext : undefined}>{label}</button>)}</div><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onNext}>SUM</button></div></section>;
+  const [selectedCategory, setSelectedCategory] = useState('Demographics');
+  const categoryDetails = {
+    Demographics: 'Review the estimated age, gender, and skin profile from the portrait.',
+    'Cosmetic Concerns': 'Review visible concern signals and prioritize the routine around them.',
+    'Skin Type Details': 'Review the skin profile used to guide cleansing, hydration, and active care.',
+    Weather: 'Adjust hydration and protection for the conditions around your location.',
+  };
+
+  return <section className="select-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><p className="select-copy">A.I. has estimated the following.<br />Fix estimated information if needed.</p></div><div className="select-options">{Object.keys(categoryDetails).map((label) => <button className={selectedCategory === label ? 'selected' : ''} type="button" key={label} onClick={() => setSelectedCategory(label)}>{label}</button>)}</div><p className="select-detail">{categoryDetails[selectedCategory]}</p><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onNext}>SUM</button></div></section>;
 }
 
 function SummaryScreen({ onBack, onHome }) {

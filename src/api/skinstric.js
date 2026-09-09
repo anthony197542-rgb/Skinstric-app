@@ -1,5 +1,21 @@
+async function fetchWithTimeout(url, options, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('The analysis service took too long to respond. Please try again.');
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
 export async function submitPhaseOne(name, location) {
-  const response = await fetch(
+  const response = await fetchWithTimeout(
     '/skinstric-api/skinstricPhaseOne',
     {
       method: 'POST',
@@ -25,7 +41,7 @@ export async function submitPhaseTwo(base64Image) {
     ? base64Image.split(',')[1]
     : base64Image;
 
-  const response = await fetch(
+  const response = await fetchWithTimeout(
     '/skinstric-api/skinstricPhaseTwo',
     {
       method: 'POST',
