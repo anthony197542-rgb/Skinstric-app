@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Check, UserCheck, RefreshCcw } from 'lucide-react';
 
-export default function DemographicsView({ data, userDetails, onRetake }) {
+export default function DemographicsView({ data, userDetails, onRetake, onNext }) {
   // Extract AI prediction objects
   const rawRace = data?.race || {};
   const rawAge = data?.age || {};
@@ -27,10 +27,10 @@ export default function DemographicsView({ data, userDetails, onRetake }) {
   const defaultTopAge = sortedAge[0]?.key || 'Unknown';
   const defaultTopGender = sortedGender[0]?.key || 'Unknown';
 
-  // Actual User Attributes (initialized with top AI prediction, customizable by user click)
-  const [actualRace, setActualRace] = useState(defaultTopRace);
-  const [actualAge, setActualAge] = useState(defaultTopAge);
-  const [actualGender, setActualGender] = useState(defaultTopGender);
+  // Confirmed profile details take precedence over AI predictions.
+  const [actualRace, setActualRace] = useState(userDetails?.race || defaultTopRace);
+  const [actualAge, setActualAge] = useState(userDetails?.age || defaultTopAge);
+  const [actualGender, setActualGender] = useState(userDetails?.gender || defaultTopGender);
 
   // Capitalize strings
   const formatLabel = (str) => {
@@ -113,13 +113,23 @@ export default function DemographicsView({ data, userDetails, onRetake }) {
           </div>
         </div>
 
-        <button
-          onClick={onRetake}
-          className="w-full py-3 border border-[#222222] font-mono text-[11px] tracking-widest text-[#888888] hover:text-white hover:border-[#444444] transition-all flex items-center justify-center gap-2 uppercase cursor-pointer"
-        >
-          <RefreshCcw className="w-3.5 h-3.5" />
-          TEST ANOTHER PORTRAIT
-        </button>
+        <div className="space-y-3">
+          {onNext && (
+            <button
+              onClick={onNext}
+              className="proceed-analysis-button"
+            >
+              PROCEED TO ANALYSIS
+            </button>
+          )}
+          <button
+            onClick={onRetake}
+            className="w-full py-3 border border-[#222222] font-mono text-[11px] tracking-widest text-[#888888] hover:text-white hover:border-[#444444] transition-all flex items-center justify-center gap-2 uppercase cursor-pointer"
+          >
+            <RefreshCcw className="w-3.5 h-3.5" />
+            TEST ANOTHER PORTRAIT
+          </button>
+        </div>
       </div>
 
       {/* RIGHT MAIN BLOCK: Sorted AI Predicted Demographics (Descending order, 2 Decimal Places) */}

@@ -3,9 +3,10 @@ import { Camera, RefreshCw, Loader2, AlertCircle, ArrowLeft, Sparkles, SwitchCam
 import { submitPhaseTwo } from '../api/skinstric.js';
 import DemographicsView from './DemographicsView.jsx';
 
-export default function Phase3Selfie({ onBack, userDetails }) {
+export default function Phase3Selfie({ onBack, onNext, userDetails }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const streamRef = useRef(null);
 
   const [stream, setStream] = useState(null);
   const [cameraActive, setCameraActive] = useState(false);
@@ -37,6 +38,7 @@ export default function Phase3Selfie({ onBack, userDetails }) {
       });
 
       setStream(newStream);
+      streamRef.current = newStream;
       setCameraActive(true);
 
       if (videoRef.current) {
@@ -57,6 +59,7 @@ export default function Phase3Selfie({ onBack, userDetails }) {
       stream.getTracks().forEach((track) => track.stop());
       setStream(null);
     }
+    streamRef.current = null;
     setCameraActive(false);
   };
 
@@ -123,7 +126,7 @@ export default function Phase3Selfie({ onBack, userDetails }) {
   // Clean up camera stream on unmount
   useEffect(() => {
     return () => {
-      stopCamera();
+      streamRef.current?.getTracks().forEach((track) => track.stop());
     };
   }, []);
 
@@ -291,6 +294,7 @@ export default function Phase3Selfie({ onBack, userDetails }) {
           data={demographicsData}
           userDetails={userDetails}
           onRetake={handleRetakeSelfie}
+          onNext={() => onNext?.(demographicsData)}
         />
       )}
     </div>

@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import Phase3Selfie from './components/Phase3Selfie.jsx';
+import Phase2Upload from './components/Phase2Upload.jsx';
+import SkincareReveal from './components/SkincareReveal.jsx';
 
 export default function App() {
   const [screen, setScreen] = useState('intro');
   const [entryStep, setEntryStep] = useState('name');
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
+  const [race, setRace] = useState('White');
+  const [age, setAge] = useState('51');
+  const [gender, setGender] = useState('Male');
+  const [skincareData, setSkincareData] = useState(null);
 
   const beginTesting = () => {
     setEntryStep('name');
@@ -67,10 +73,12 @@ export default function App() {
         )}
         {screen === 'processing' && <StatusScreen message="Processing submission" onBack={goHome} />}
         {screen === 'thank-you' && <StatusScreen message="Thank you!" submessage="Proceed for the next step" onBack={goHome} onNext={() => setScreen('result')} />}
-        {screen === 'result' && <ResultScreen onBack={() => setScreen('thank-you')} onCamera={() => setScreen('camera')} onNext={() => setScreen('select')} />}
-        {screen === 'camera' && <Phase3Selfie userDetails={{ name, location }} onBack={() => setScreen('result')} />}
+        {screen === 'result' && <ResultScreen onBack={() => setScreen('thank-you')} onCamera={() => setScreen('camera')} onGallery={() => setScreen('gallery')} onNext={() => setScreen('select')} />}
+        {screen === 'camera' && <Phase3Selfie userDetails={{ name, location, race, age, gender }} onBack={() => setScreen('result')} onNext={(data) => { setSkincareData(data); setScreen('skincare'); }} />}
+        {screen === 'gallery' && <Phase2Upload userDetails={{ name, location, race, age, gender }} onBack={() => setScreen('result')} onNext={(data) => { setSkincareData(data); setScreen('skincare'); }} />}
+        {screen === 'skincare' && <SkincareReveal data={skincareData} userDetails={{ name, location, race, age, gender }} onBack={() => setScreen('camera')} onHome={goHome} />}
         {screen === 'select' && <SelectScreen onBack={() => setScreen('result')} onNext={() => setScreen('summary')} />}
-        {screen === 'summary' && <SummaryScreen onBack={() => setScreen('select')} onHome={goHome} />}
+        {screen === 'summary' && <SummaryScreen age={age} gender={gender} onBack={() => setScreen('select')} onHome={goHome} />}
       </main>
     </div>
   );
@@ -92,14 +100,14 @@ function StatusScreen({ message, submessage, onBack, onNext }) {
   return <section className="status-screen"><p className="testing-heading">TO START ANALYSIS</p><div className="status-stage"><div className="status-copy"><p>{message}</p>{submessage && <small>{submessage}</small>}{!submessage && <div className="status-dots">● ● ●</div>}</div><ReferenceDiamonds /></div><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button>{onNext && <button className="reference-diamond-button" type="button" onClick={onNext}>PROCEED</button>}</div></section>;
 }
 
-function ResultScreen({ onBack, onCamera, onNext }) {
-  return <section className="result-screen"><div><p className="testing-heading">TO START ANALYSIS</p><h1>Preview</h1></div><div className="result-options"><button type="button" onClick={onCamera}><span className="result-icon">◉</span><b>ALLOW A.I.<br />TO SCAN YOUR FACE</b></button><button type="button"><span className="result-icon">▧</span><b>ALLOW A.I.<br />ACCESS GALLERY</b></button></div><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onNext}>›</button></div></section>;
+function ResultScreen({ onBack, onCamera, onGallery, onNext }) {
+  return <section className="result-screen"><div><p className="testing-heading">TO START ANALYSIS</p><h1>Preview</h1></div><div className="result-options"><button type="button" onClick={onCamera}><span className="result-icon">◉</span><b>ALLOW A.I.<br />TO SCAN YOUR FACE</b></button><button type="button" onClick={onGallery}><span className="result-icon">▧</span><b>ALLOW A.I.<br />ACCESS GALLERY</b></button></div><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onNext}>›</button></div></section>;
 }
 
 function SelectScreen({ onBack, onNext }) {
   return <section className="select-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><p className="select-copy">A.I. has estimated the following.<br />Fix estimated information if needed.</p></div><div className="select-options">{['Demographics', 'Cosmetic Concerns', 'Skin Type Details', 'Weather'].map((label, index) => <button type="button" key={label} onClick={index === 0 ? onNext : undefined}>{label}</button>)}</div><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onNext}>SUM</button></div></section>;
 }
 
-function SummaryScreen({ onBack, onHome }) {
-  return <section className="summary-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><h1>DEMOGRAPHICS</h1><h2>PREDICTED RACE &amp; AGE</h2></div><p className="summary-empty">No analysis data found. Please upload an image first.</p><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onHome}>HOME</button></div></section>;
+function SummaryScreen({ age, gender, onBack, onHome }) {
+  return <section className="summary-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><h1>DEMOGRAPHICS</h1><h2>PREDICTED RACE &amp; AGE</h2></div><div className="summary-profile"><div><span>AGE</span><strong>{age}</strong></div><div><span>GENDER</span><strong>{gender}</strong></div></div><p className="summary-empty">Profile information confirmed.</p><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onHome}>HOME</button></div></section>;
 }
