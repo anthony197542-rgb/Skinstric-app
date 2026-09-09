@@ -3,6 +3,7 @@ import { submitPhaseOne } from './api/skinstric.js';
 import Phase3Selfie from './components/Phase3Selfie.jsx';
 import Phase2Upload from './components/Phase2Upload.jsx';
 import SkincareReveal from './components/SkincareReveal.jsx';
+import DemographicsView from './components/DemographicsView.jsx';
 
 export default function App() {
   const [screen, setScreen] = useState('intro');
@@ -10,6 +11,7 @@ export default function App() {
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
   const [skincareData, setSkincareData] = useState(null);
+  const [analysisCategory, setAnalysisCategory] = useState('Demographics');
   const [entryError, setEntryError] = useState('');
   const [entryLoading, setEntryLoading] = useState(false);
   const [entryOffline, setEntryOffline] = useState(false);
@@ -125,11 +127,11 @@ export default function App() {
         {screen === 'processing' && <StatusScreen message={entryOffline ? 'Saved locally' : 'Processing submission'} onBack={goHome} />}
         {screen === 'thank-you' && <StatusScreen message="Thank you!" submessage={entryOffline ? 'Backend unavailable. Continue in local mode.' : 'Proceed for the next step'} onBack={goHome} onNext={() => setScreen('result')} />}
         {screen === 'result' && <ResultScreen onBack={() => setScreen('thank-you')} onCamera={() => setScreen('camera')} onGallery={() => setScreen('gallery')} onNext={() => setScreen('select')} />}
-        {screen === 'camera' && <Phase3Selfie userDetails={{ name, location }} onBack={() => setScreen('result')} onNext={(data) => { setSkincareData(data); setScreen('skincare'); }} />}
-        {screen === 'gallery' && <Phase2Upload userDetails={{ name, location }} onBack={() => setScreen('result')} onNext={(data) => { setSkincareData(data); setScreen('skincare'); }} />}
+        {screen === 'camera' && <Phase3Selfie userDetails={{ name, location }} onBack={() => setScreen('result')} onNext={(data) => { setSkincareData(data); setScreen('select'); }} />}
+        {screen === 'gallery' && <Phase2Upload userDetails={{ name, location }} onBack={() => setScreen('result')} onNext={(data) => { setSkincareData(data); setScreen('select'); }} />}
         {screen === 'skincare' && <SkincareReveal data={skincareData} userDetails={{ name, location }} onBack={() => setScreen('camera')} onHome={goHome} />}
-        {screen === 'select' && <SelectScreen onBack={() => setScreen('result')} onNext={() => setScreen('summary')} />}
-        {screen === 'summary' && <SummaryScreen onBack={() => setScreen('select')} onHome={goHome} />}
+        {screen === 'select' && <SelectScreen onBack={() => setScreen('result')} onSelectCategory={(category) => { setAnalysisCategory(category); setScreen('summary'); }} />}
+        {screen === 'summary' && <SummaryScreen category={analysisCategory} data={skincareData} userDetails={{ name, location }} onBack={() => setScreen('select')} onRetake={() => setScreen('result')} />}
       </main>
     </div>
   );
@@ -176,18 +178,54 @@ function ResultScreen({ onBack, onCamera, onGallery, onNext }) {
   </section>;
 }
 
-function SelectScreen({ onBack, onNext }) {
+function SelectScreen({ onBack, onSelectCategory }) {
   const [selectedCategory, setSelectedCategory] = useState('Demographics');
   const categoryDetails = {
     Demographics: 'Review the estimated age, gender, and skin profile from the portrait.',
     'Cosmetic Concerns': 'Review visible concern signals and prioritize the routine around them.',
-    'Skin Type Details': 'Review the skin profile used to guide cleansing, hydration, and active care.',
+    'Skin Type': 'Review the skin profile used to guide cleansing, hydration, and active care.',
     Weather: 'Adjust hydration and protection for the conditions around your location.',
   };
 
-  return <section className="select-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><p className="select-copy">A.I. has estimated the following.<br />Fix estimated information if needed.</p></div><div className="select-options">{Object.keys(categoryDetails).map((label) => <button className={selectedCategory === label ? 'selected' : ''} type="button" key={label} onClick={() => setSelectedCategory(label)}>{label}</button>)}</div><p className="select-detail">{categoryDetails[selectedCategory]}</p><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onNext}>SUM</button></div></section>;
+  const selectCategory = (label) => {
+    setSelectedCategory(label);
+    onSelectCategory(label);
+  };
+
+  return <section className="select-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><p className="select-copy">A.I. has estimated the following.<br />Fix estimated information if needed.</p></div><div className="select-options">{Object.keys(categoryDetails).map((label) => <button className={selectedCategory === label ? 'selected' : ''} type="button" key={label} onClick={() => selectCategory(label)}>{label}</button>)}</div><p className="select-detail">{categoryDetails[selectedCategory]}</p><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button></div></section>;
 }
 
-function SummaryScreen({ onBack, onHome }) {
-  return <section className="summary-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><h1>DEMOGRAPHICS</h1><h2>PREDICTED RACE &amp; AGE</h2></div><p className="summary-empty">Choose a portrait source to generate individual analysis.</p><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onHome}>HOME</button></div></section>;
+function SummaryScreen({ category, data, userDetails, onBack, onRetake }) {
+  return <section className="summary-screen">
+    <div className="summary-heading"><p className="testing-heading">A.I. ANALYSIS</p><h1>{category.toUpperCase()}</h1><h2>{category === 'Demographics' ? 'PREDICTED RACE & AGE' : 'PERSONALIZED INSIGHTS'}</h2></div>
+    {category === 'Demographics' ? <DemographicsView data={data} userDetails={userDetails} onRetake={onRetake} onNext={null} /> : <AnalysisDetail category={category} data={data} userDetails={userDetails} />}
+    <div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button></div>
+  </section>;
+}
+
+function AnalysisDetail({ category, userDetails }) {
+  const details = {
+    'Cosmetic Concerns': {
+      title: 'VISIBLE CONCERNS',
+      copy: 'Review the areas that may need the most attention in your routine.',
+      items: ['Texture and unevenness', 'Tone and visible discoloration', 'Hydration and sensitivity'],
+    },
+    'Skin Type': {
+      title: 'SKIN PROFILE',
+      copy: 'Use this profile to guide cleansing, hydration, and active care.',
+      items: ['Daily hydration balance', 'Barrier support', 'Gentle active ingredients'],
+    },
+    Weather: {
+      title: `ROUTINE FOR ${userDetails.location.toUpperCase() || 'YOUR LOCATION'}`,
+      copy: 'Weather-aware guidance will adjust protection and hydration for your location.',
+      items: ['Hydration level', 'Sun protection', 'Environmental exposure'],
+    },
+  };
+  const detail = details[category];
+
+  return <div className="analysis-detail">
+    <div className="analysis-detail-intro"><h3>{detail.title}</h3><p>{detail.copy}</p></div>
+    <div className="analysis-detail-items">{detail.items.map((item, index) => <div className="analysis-detail-item" key={item}><span>0{index + 1}</span><strong>{item}</strong><b>REVIEW</b></div>)}</div>
+    <p className="analysis-detail-note">Your portrait analysis is saved for the next skincare recommendation step.</p>
+  </div>;
 }
