@@ -43,7 +43,8 @@ textarea {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  min-height: 560px;
+  min-height: 0;
+  max-height: 100svh;
   overflow: hidden;
   color: #151515;
   background: #fff;
@@ -99,12 +100,12 @@ textarea {
 }
 
 .intro-diamond-outer {
-  width: min(72vw, 670px);
+  width: min(60vw, 560px);
   aspect-ratio: 1;
 }
 
 .intro-diamond-inner {
-  width: min(58vw, 540px);
+  width: min(49vw, 450px);
   aspect-ratio: 1;
 }
 
@@ -242,7 +243,7 @@ textarea {
 
 @media (max-width: 640px) {
   .intro-screen {
-    min-height: 100svh;
+    height: 100svh;
   }
 
   .intro-header {
@@ -263,11 +264,11 @@ textarea {
   }
 
   .intro-diamond-outer {
-    width: 110vw;
+    width: 65vw;
   }
 
   .intro-diamond-inner {
-    width: 88vw;
+    width: 50vw;
   }
 
   .intro-content h1 {
@@ -1522,11 +1523,5 @@ h1 em {
 
   .skills {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-height: 600px) and (min-width: 641px) {
-  .intro-content {
-    transform: translateY(30vh);
   }
 }
