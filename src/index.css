@@ -1710,3 +1710,123 @@ h1 em {
     grid-template-columns: 1fr;
   }
 }
+
+.testing-screen {
+  min-height: 100vh;
+  height: 100vh;
+  padding: 92px 6vw 30px;
+}
+
+.testing-screen .reference-header {
+  top: 22px;
+  right: 5.5vw;
+  left: 5.5vw;
+}
+
+.testing-screen .reference-brand,
+.testing-screen .reference-intro {
+  font-size: 11px;
+}
+
+.testing-screen .reference-code {
+  padding: 10px 15px;
+  font-size: 9px;
+}
+
+.testing-heading {
+  font-size: clamp(1.25rem, 2.3vw, 1.75rem);
+}
+
+.testing-stage {
+  top: 11%;
+  right: 18%;
+  bottom: 13%;
+  left: 18%;
+}
+
+.testing-stage .reference-diamonds span {
+  width: min(32vw, 370px);
+  border-width: 2px;
+}
+
+.testing-stage .reference-diamonds span:nth-child(2) {
+  width: min(26vw, 300px);
+}
+
+.testing-stage .reference-diamonds span:nth-child(3) {
+  width: min(21vw, 245px);
+}
+
+.testing-prompt {
+  top: 27%;
+  font-size: clamp(1.35rem, 2.8vw, 2rem);
+}
+
+.testing-form {
+  margin-top: 105px;
+}
+
+.testing-form input {
+  width: min(400px, 62vw);
+  padding-bottom: 7px;
+  font-size: clamp(2rem, 4.8vw, 3.8rem);
+}
+
+.testing-form button {
+  padding: 12px 0;
+  font-size: 14px;
+}
+
+.testing-error {
+  margin-top: 12px;
+  font-size: 10px;
+}
+
+.testing-screen .reference-back {
+  bottom: 15%;
+  left: 5.5%;
+}
+
+@media (max-width: 640px) {
+  .testing-screen {
+    padding: 92px 22px 28px;
+  }
+
+  .testing-stage {
+    top: 10%;
+    right: 4%;
+    bottom: 12%;
+    left: 4%;
+  }
+
+  .testing-stage .reference-diamonds span {
+    width: 66vw;
+  }
+
+  .testing-stage .reference-diamonds span:nth-child(2) {
+    width: 53vw;
+  }
+
+  .testing-stage .reference-diamonds span:nth-child(3) {
+    width: 43vw;
+  }
+
+  .testing-prompt {
+    top: 29%;
+    font-size: 1.35rem;
+  }
+
+  .testing-form {
+    margin-top: 92px;
+  }
+
+  .testing-form input {
+    width: min(340px, 78vw);
+    font-size: 2.6rem;
+  }
+
+  .testing-screen .reference-back {
+    bottom: 13%;
+    left: 9%;
+  }
+}
