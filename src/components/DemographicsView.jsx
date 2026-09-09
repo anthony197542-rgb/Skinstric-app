@@ -3,9 +3,9 @@ import { Sparkles, Check, UserCheck, RefreshCcw } from 'lucide-react';
 
 export default function DemographicsView({ data, userDetails, onRetake, onNext }) {
   // Extract AI prediction objects
-  const rawRace = data?.race || {};
-  const rawAge = data?.age || {};
-  const rawGender = data?.gender || {};
+  const rawRace = data?.race || data?.skin_tone || data?.skinTone || {};
+  const rawAge = data?.age || data?.age_bracket || data?.ageBracket || {};
+  const rawGender = data?.gender || data?.sex || {};
 
   // Sort categories in descending order of confidence score
   const sortDescending = (obj) => {
@@ -27,10 +27,11 @@ export default function DemographicsView({ data, userDetails, onRetake, onNext }
   const defaultTopAge = sortedAge[0]?.key || 'Unknown';
   const defaultTopGender = sortedGender[0]?.key || 'Unknown';
 
-  // Confirmed profile details take precedence over AI predictions.
+  // Confirmed profile details take precedence only when explicitly supplied.
   const [actualRace, setActualRace] = useState(userDetails?.race || defaultTopRace);
   const [actualAge, setActualAge] = useState(userDetails?.age || defaultTopAge);
   const [actualGender, setActualGender] = useState(userDetails?.gender || defaultTopGender);
+  const [confirmedAge, setConfirmedAge] = useState('');
 
   // Capitalize strings
   const formatLabel = (str) => {
@@ -50,8 +51,8 @@ export default function DemographicsView({ data, userDetails, onRetake, onNext }
             <UserCheck className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-white">VERIFIED ATTRIBUTES</h2>
-            <p className="text-[10px] font-mono text-[#666666] uppercase mt-0.5">CLICK ANY VALUE TO OVERRIDE</p>
+            <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-white">AI ESTIMATE</h2>
+            <p className="text-[10px] font-mono text-[#666666] uppercase mt-0.5">BASED ON THIS PORTRAIT</p>
           </div>
         </div>
 
@@ -67,48 +68,49 @@ export default function DemographicsView({ data, userDetails, onRetake, onNext }
           {/* Race Block */}
           <div className="p-4 border border-[#222222] bg-black">
             <div className="flex items-center justify-between text-[#777777] mb-1">
-              <span className="font-bold uppercase text-[10px] tracking-widest">RACE</span>
-              {actualRace !== defaultTopRace && (
-                <span className="text-[9px] text-white font-bold bg-[#222222] px-2 py-0.5 border border-[#444444] uppercase">
-                  USER OVERRIDE
-                </span>
-              )}
+              <span className="font-bold uppercase text-[10px] tracking-widest">SKIN TONE / RACE</span>
             </div>
             <p className="text-base font-bold text-white uppercase">{formatLabel(actualRace)}</p>
             <p className="text-[10px] text-[#555555] mt-1 uppercase">
-              AI PREDICTED: <span className="text-[#999999]">{formatLabel(defaultTopRace)}</span>
+              AI CONFIDENCE: <span className="text-[#999999]">{(sortedRace[0]?.value * 100 || 0).toFixed(2)}%</span>
             </p>
           </div>
 
           {/* Age Block */}
           <div className="p-4 border border-[#222222] bg-black">
             <div className="flex items-center justify-between text-[#777777] mb-1">
-              <span className="font-bold uppercase text-[10px] tracking-widest">AGE BRACKET</span>
-              {actualAge !== defaultTopAge && (
-                <span className="text-[9px] text-white font-bold bg-[#222222] px-2 py-0.5 border border-[#444444] uppercase">
-                  USER OVERRIDE
-                </span>
-              )}
+              <span className="font-bold uppercase text-[10px] tracking-widest">CLOSEST AGE BRACKET</span>
             </div>
             <p className="text-base font-bold text-white uppercase">{actualAge} YEARS</p>
             <p className="text-[10px] text-[#555555] mt-1 uppercase">
-              AI PREDICTED: <span className="text-[#999999]">{defaultTopAge}</span>
+              AI CONFIDENCE: <span className="text-[#999999]">{(sortedAge[0]?.value * 100 || 0).toFixed(2)}%</span>
             </p>
+            <label className="mt-3 block text-[9px] uppercase tracking-wider text-[#777777]">
+              Correct exact age
+              <input
+                type="number"
+                min="1"
+                max="120"
+                value={confirmedAge}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setConfirmedAge(value);
+                  if (value) setActualAge(value);
+                }}
+                placeholder="OPTIONAL"
+                className="mt-1 w-full border border-[#333333] bg-black px-2 py-2 text-xs text-white outline-none"
+              />
+            </label>
           </div>
 
           {/* Gender Block */}
           <div className="p-4 border border-[#222222] bg-black">
             <div className="flex items-center justify-between text-[#777777] mb-1">
               <span className="font-bold uppercase text-[10px] tracking-widest">GENDER</span>
-              {actualGender !== defaultTopGender && (
-                <span className="text-[9px] text-white font-bold bg-[#222222] px-2 py-0.5 border border-[#444444] uppercase">
-                  USER OVERRIDE
-                </span>
-              )}
             </div>
             <p className="text-base font-bold text-white uppercase">{formatLabel(actualGender)}</p>
             <p className="text-[10px] text-[#555555] mt-1 uppercase">
-              AI PREDICTED: <span className="text-[#999999]">{formatLabel(defaultTopGender)}</span>
+              AI CONFIDENCE: <span className="text-[#999999]">{(sortedGender[0]?.value * 100 || 0).toFixed(2)}%</span>
             </p>
           </div>
         </div>
@@ -164,7 +166,7 @@ export default function DemographicsView({ data, userDetails, onRetake, onNext }
                         : 'border-[#333333] group-hover:border-white'
                         }`}
                     >
-                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                      {isSelected && <Check className="w-3 h-3 stroke-3" />}
                     </div>
                     <span className="text-xs font-bold uppercase tracking-wider">{formatLabel(item.key)}</span>
                   </div>
@@ -217,7 +219,7 @@ export default function DemographicsView({ data, userDetails, onRetake, onNext }
                         : 'border-[#333333] group-hover:border-white'
                         }`}
                     >
-                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                      {isSelected && <Check className="w-3 h-3 stroke-3" />}
                     </div>
                     <span className="text-xs font-bold uppercase tracking-wider">{item.key} YEARS</span>
                   </div>
@@ -269,7 +271,7 @@ export default function DemographicsView({ data, userDetails, onRetake, onNext }
                         : 'border-[#333333] group-hover:border-white'
                         }`}
                     >
-                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                      {isSelected && <Check className="w-3 h-3 stroke-3" />}
                     </div>
                     <span className="text-xs font-bold uppercase tracking-wider">{formatLabel(item.key)}</span>
                   </div>

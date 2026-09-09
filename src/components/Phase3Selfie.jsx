@@ -160,7 +160,7 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
         <div className="border border-[#222222] bg-[#080808] p-8 sm:p-12">
           <div className="max-w-xl mx-auto space-y-8">
             {/* Camera Viewport */}
-            <div className="relative border border-[#282828] bg-black overflow-hidden min-h-[320px] flex items-center justify-center">
+            <div className="relative border border-[#282828] bg-black overflow-hidden min-h-80 flex items-center justify-center">
               {/* Hidden Canvas used for raster capture */}
               <canvas ref={canvasRef} className="hidden" />
 

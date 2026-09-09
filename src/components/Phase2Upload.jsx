@@ -120,7 +120,7 @@ export default function Phase2Upload({ onNext, onBack, userDetails }) {
             <div
               onDrop={handleDrop}
               onDragOver={handleDragOver}
-              className={`border border-dashed p-10 text-center transition-all flex flex-col items-center justify-center min-h-[280px] cursor-pointer relative ${preview
+              className={`border border-dashed p-10 text-center transition-all flex flex-col items-center justify-center min-h-70 cursor-pointer relative ${preview
                 ? 'border-white bg-black'
                 : 'border-[#282828] hover:border-[#555555] bg-black/60'
                 }`}

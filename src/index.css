@@ -326,6 +326,165 @@ textarea {
   background: #fff !important;
 }
 
+.intro-screen {
+  display: flex;
+  min-height: 100vh;
+  height: 100vh;
+  padding: 4px 0 7px;
+  background: #fff;
+}
+
+.intro-frame {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #151515;
+  background: #fff;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+}
+
+.intro-frame .reference-header {
+  top: 18px;
+  right: 18px;
+  left: 18px;
+  color: #151515;
+}
+
+.intro-frame .reference-brand,
+.intro-frame .reference-intro {
+  font-size: 8px;
+}
+
+.intro-frame .reference-code {
+  padding: 8px 11px;
+  font-size: 7px;
+}
+
+.intro-frame .intro-diamond {
+  z-index: -1;
+  border-color: #d6dbe0;
+}
+
+.intro-frame .intro-diamond-outer {
+  width: min(78vw, 900px);
+}
+
+.intro-frame .intro-diamond-inner {
+  display: none;
+}
+
+.intro-frame .intro-content {
+  position: static;
+  width: min(600px, 65vw);
+}
+
+.intro-frame .intro-content h1 {
+  margin: 0 0 20px;
+  font-size: clamp(3rem, 6.3vw, 5.8rem);
+  line-height: .94;
+}
+
+.intro-frame .intro-content p {
+  position: absolute;
+  right: auto;
+  bottom: 58px;
+  left: 54px;
+  width: 220px;
+  margin: 0;
+  color: #151515;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.intro-side-action {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  padding: 0;
+  color: #151515;
+  background: transparent;
+  font-size: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.intro-discover {
+  left: 6.8%;
+}
+
+.intro-test {
+  right: 6.8%;
+}
+
+.intro-side-action .intro-mark {
+  width: 22px;
+  height: 22px;
+  border-color: #151515;
+  font-size: 17px;
+}
+
+@media (max-width: 640px) {
+  .intro-screen {
+    padding: 18px;
+  }
+
+  .intro-frame {
+    height: calc(100svh - 36px);
+    min-height: 0;
+  }
+
+  .intro-frame .intro-diamond-outer {
+    width: 130vw;
+  }
+
+  .intro-frame .intro-diamond-inner {
+    display: none;
+  }
+
+  .intro-frame .intro-content {
+    width: 80vw;
+  }
+
+  .intro-frame .intro-content h1 {
+    font-size: 13vw;
+  }
+
+  .intro-frame .intro-content p {
+    right: 22px;
+    bottom: 48px;
+    left: 22px;
+    width: 180px;
+  }
+
+  .intro-side-action {
+    font-size: 7px;
+  }
+
+  .intro-discover {
+    left: 7%;
+  }
+
+  .intro-test {
+    right: 7%;
+  }
+}
+
 .reference-header {
   position: absolute;
   z-index: 10;
@@ -450,6 +609,23 @@ textarea {
   background: transparent;
   font-weight: 800;
   cursor: pointer;
+}
+
+.testing-form button:disabled {
+  cursor: wait;
+  opacity: .55;
+}
+
+.testing-error {
+  position: relative;
+  z-index: 4;
+  max-width: 420px;
+  margin: 18px auto 0;
+  color: #a40000;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
 }
 
 .reference-diamonds {
@@ -692,6 +868,15 @@ textarea {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.skincare-profile small {
+  display: block;
+  margin-top: 8px;
+  color: #73777d;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: .08em;
 }
 
 .skincare-grid {

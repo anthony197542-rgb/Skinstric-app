@@ -10,11 +10,13 @@ export async function submitPhaseOne(name, location) {
     }
   );
 
+  const data = await response.json().catch(() => ({}));
+
   if (!response.ok) {
-    throw new Error('Failed to submit user details to Phase 1 API.');
+    throw new Error(data.message || 'Failed to submit user details to Phase 1 API.');
   }
 
-  return response.json();
+  return data;
 }
 
 export async function submitPhaseTwo(base64Image) {
