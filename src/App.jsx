@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Phase3Selfie from './components/Phase3Selfie.jsx';
 
 export default function App() {
   const [screen, setScreen] = useState('intro');
@@ -66,7 +67,8 @@ export default function App() {
         )}
         {screen === 'processing' && <StatusScreen message="Processing submission" onBack={goHome} />}
         {screen === 'thank-you' && <StatusScreen message="Thank you!" submessage="Proceed for the next step" onBack={goHome} onNext={() => setScreen('result')} />}
-        {screen === 'result' && <ResultScreen onBack={() => setScreen('thank-you')} onNext={() => setScreen('select')} />}
+        {screen === 'result' && <ResultScreen onBack={() => setScreen('thank-you')} onCamera={() => setScreen('camera')} onNext={() => setScreen('select')} />}
+        {screen === 'camera' && <Phase3Selfie userDetails={{ name, location }} onBack={() => setScreen('result')} />}
         {screen === 'select' && <SelectScreen onBack={() => setScreen('result')} onNext={() => setScreen('summary')} />}
         {screen === 'summary' && <SummaryScreen onBack={() => setScreen('select')} onHome={goHome} />}
       </main>
@@ -90,8 +92,8 @@ function StatusScreen({ message, submessage, onBack, onNext }) {
   return <section className="status-screen"><p className="testing-heading">TO START ANALYSIS</p><div className="status-stage"><div className="status-copy"><p>{message}</p>{submessage && <small>{submessage}</small>}{!submessage && <div className="status-dots">● ● ●</div>}</div><ReferenceDiamonds /></div><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button>{onNext && <button className="reference-diamond-button" type="button" onClick={onNext}>PROCEED</button>}</div></section>;
 }
 
-function ResultScreen({ onBack, onNext }) {
-  return <section className="result-screen"><div><p className="testing-heading">TO START ANALYSIS</p><h1>Preview</h1></div><div className="result-options"><button type="button"><span className="result-icon">◉</span><b>ALLOW A.I.<br />TO SCAN YOUR FACE</b></button><button type="button"><span className="result-icon">▧</span><b>ALLOW A.I.<br />ACCESS GALLERY</b></button></div><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onNext}>›</button></div></section>;
+function ResultScreen({ onBack, onCamera, onNext }) {
+  return <section className="result-screen"><div><p className="testing-heading">TO START ANALYSIS</p><h1>Preview</h1></div><div className="result-options"><button type="button" onClick={onCamera}><span className="result-icon">◉</span><b>ALLOW A.I.<br />TO SCAN YOUR FACE</b></button><button type="button"><span className="result-icon">▧</span><b>ALLOW A.I.<br />ACCESS GALLERY</b></button></div><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onNext}>›</button></div></section>;
 }
 
 function SelectScreen({ onBack, onNext }) {
