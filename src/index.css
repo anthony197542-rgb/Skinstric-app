@@ -874,6 +874,143 @@ textarea {
   font-weight: 400;
 }
 
+/* Compact analysis states match the reference screens. */
+.status-screen,
+.result-screen,
+.select-screen,
+.summary-screen {
+  height: 100vh;
+  min-height: 0;
+  padding: 42px 5.5vw 30px;
+}
+
+.status-screen>.testing-heading,
+.result-screen>div:first-child .testing-heading,
+.select-screen>div:first-child .testing-heading,
+.summary-screen>div:first-child .testing-heading {
+  font-size: 10px;
+  letter-spacing: .02em;
+}
+
+.status-stage {
+  top: 13%;
+  right: 29%;
+  bottom: 18%;
+  left: 29%;
+}
+
+.status-stage .reference-diamonds span {
+  width: min(21vw, 235px);
+  border-width: 1px;
+}
+
+.status-stage .reference-diamonds span:nth-child(2) {
+  width: min(18vw, 200px);
+}
+
+.status-stage .reference-diamonds span:nth-child(3) {
+  width: min(15vw, 168px);
+}
+
+.status-copy p,
+.status-copy small {
+  font-size: 10px;
+}
+
+.status-copy small {
+  font-size: 7px;
+}
+
+.status-dots {
+  font-size: 9px;
+  letter-spacing: 4px;
+}
+
+.status-actions {
+  right: 4.5%;
+  bottom: 6%;
+  left: 4.5%;
+}
+
+.status-actions .reference-diamond-button {
+  width: 30px;
+  height: 30px;
+  border-width: 1px;
+  font-size: 7px;
+}
+
+.result-screen,
+.select-screen,
+.summary-screen {
+  gap: 0;
+}
+
+.result-screen h1,
+.summary-screen h1 {
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  letter-spacing: -.05em;
+}
+
+.result-options {
+  gap: 8vw;
+}
+
+.result-options button {
+  gap: 8px;
+  font-size: 7px;
+}
+
+.result-icon {
+  width: 50px;
+  height: 50px;
+  border-width: 1px;
+  font-size: 16px;
+}
+
+.select-copy {
+  margin-top: 3px;
+  font-size: 7px;
+  line-height: 1.4;
+}
+
+.select-options {
+  align-items: center;
+  gap: 8px;
+}
+
+.select-options button {
+  min-width: 55px;
+  min-height: 55px;
+  border-width: 1px;
+  font-size: 6px;
+}
+
+.summary-screen h2 {
+  margin-top: 3px;
+  font-size: 8px;
+}
+
+.summary-empty {
+  font-size: 8px;
+}
+
+.summary-profile {
+  gap: 6px;
+}
+
+.summary-profile div {
+  min-width: 90px;
+  padding: 10px;
+}
+
+.summary-profile span {
+  font-size: 7px;
+}
+
+.summary-profile strong {
+  font-size: 18px;
+}
+
 .skincare-screen {
   min-height: 100vh;
   padding: 72px 7vw 42px;
