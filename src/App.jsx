@@ -152,7 +152,28 @@ function StatusScreen({ message, submessage, onBack, onNext }) {
 }
 
 function ResultScreen({ onBack, onCamera, onGallery, onNext }) {
-  return <section className="result-screen"><div><p className="testing-heading">TO START ANALYSIS</p><h1>Preview</h1></div><div className="result-options"><button type="button" onClick={onCamera}><span className="result-icon">◉</span><b>ALLOW A.I.<br />TO SCAN YOUR FACE</b></button><button type="button" onClick={onGallery}><span className="result-icon">▧</span><b>ALLOW A.I.<br />ACCESS GALLERY</b></button></div><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button><button className="reference-diamond-button" type="button" onClick={onNext}>›</button></div></section>;
+  return <section className="result-screen">
+    <p className="testing-heading">START ANALYSIS</p>
+    <div className="result-preview">
+      <span>Preview</span>
+      <div className="result-preview-box" aria-hidden="true" />
+    </div>
+    <div className="result-options">
+      <button className="result-option result-camera-option" type="button" onClick={onCamera}>
+        <span className="result-option-geometry" aria-hidden="true"><span /><span /><span /></span>
+        <span className="result-icon result-camera-icon" aria-hidden="true"><span /></span>
+        <b>ALLOW A.I.<br />TO SCAN YOUR FACE</b>
+      </button>
+      <button type="button" onClick={onGallery}>
+        <span className="result-icon result-gallery-icon" aria-hidden="true"><span /></span>
+        <b>ALLOW A.I.<br />ACCESS GALLERY</b>
+      </button>
+    </div>
+    <div className="result-back-control">
+      <button className="reference-diamond-button" type="button" onClick={onBack} aria-label="Back"><span className="result-back-arrow" /></button>
+      <span>BACK</span>
+    </div>
+  </section>;
 }
 
 function SelectScreen({ onBack, onNext }) {
