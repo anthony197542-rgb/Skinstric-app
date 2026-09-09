@@ -662,16 +662,49 @@ textarea {
   aspect-ratio: 1;
   border: 2px dotted #e5e5e5;
   transform: translate(-50%, -50%) rotate(35deg);
+  animation: testing-diamond-outer 12s linear infinite;
 }
 
 .reference-diamonds span:nth-child(2) {
   width: min(36vw, 480px);
   transform: translate(-50%, -50%) rotate(12deg);
+  animation: testing-diamond-middle 9s linear infinite;
 }
 
 .reference-diamonds span:nth-child(3) {
   width: min(29vw, 380px);
   transform: translate(-50%, -50%) rotate(-20deg);
+  animation: testing-diamond-inner 7s linear infinite;
+}
+
+@keyframes testing-diamond-outer {
+  from {
+    transform: translate(-50%, -50%) rotate(35deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(395deg);
+  }
+}
+
+@keyframes testing-diamond-middle {
+  from {
+    transform: translate(-50%, -50%) rotate(12deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(-348deg);
+  }
+}
+
+@keyframes testing-diamond-inner {
+  from {
+    transform: translate(-50%, -50%) rotate(-20deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(340deg);
+  }
 }
 
 .reference-diamond-button {
