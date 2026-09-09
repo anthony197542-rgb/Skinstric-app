@@ -116,7 +116,10 @@ export default function App() {
               {entryError && <p className="testing-error" role="alert">{entryError}</p>}
               <ReferenceDiamonds />
             </div>
-            <button className="reference-diamond-button reference-back" type="button" onClick={goHome}>BACK</button>
+            <button className="testing-back-control" type="button" onClick={goHome}>
+              <span className="testing-back-diamond" aria-hidden="true"><span className="testing-back-arrow" /></span>
+              <span>BACK</span>
+            </button>
           </section>
         )}
         {screen === 'processing' && <StatusScreen message={entryOffline ? 'Saved locally' : 'Processing submission'} onBack={goHome} />}

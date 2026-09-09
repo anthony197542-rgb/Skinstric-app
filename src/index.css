@@ -1840,6 +1840,41 @@ h1 em {
   left: 5.5%;
 }
 
+.testing-back-control {
+  position: absolute;
+  bottom: 15%;
+  left: 5.5%;
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  border: 0;
+  padding: 0;
+  color: #1a1b1c;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.testing-back-diamond {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border: 1.5px solid #1a1b1c;
+  transform: rotate(45deg);
+}
+
+.testing-back-arrow {
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 11px solid #1a1b1c;
+  transform: rotate(-45deg);
+}
+
 @media (max-width: 640px) {
   .testing-screen {
     padding: 92px 22px 28px;
@@ -1881,5 +1916,17 @@ h1 em {
   .testing-screen .reference-back {
     bottom: 13%;
     left: 9%;
+  }
+
+  .testing-back-control {
+    bottom: 13%;
+    left: 9%;
+    gap: 14px;
+    font-size: 14px;
+  }
+
+  .testing-back-diamond {
+    width: 48px;
+    height: 48px;
   }
 }
