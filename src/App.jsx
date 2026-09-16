@@ -150,33 +150,75 @@ function ReferenceDiamonds() {
 }
 
 function StatusScreen({ message, submessage, onBack, onNext }) {
-  return <section className="status-screen"><p className="testing-heading">TO START ANALYSIS</p><div className="status-stage"><div className="status-copy"><p>{message}</p>{submessage && <small>{submessage}</small>}{!submessage && <div className="status-dots">● ● ●</div>}</div><ReferenceDiamonds /></div><div className="status-actions"><button className="reference-diamond-button" type="button" onClick={onBack}>BACK</button>{onNext && <button className="reference-diamond-button" type="button" onClick={onNext}>PROCEED</button>}</div></section>;
+  return (
+    <section className="status-screen">
+      <p className="testing-heading">TO START ANALYSIS</p>
+      <div className="status-stage">
+        <div className="status-copy">
+          <p>{message}</p>
+          {submessage && <small>{submessage}</small>}
+          {!submessage && <div className="status-dots">● ● ●</div>}
+        </div>
+        <ReferenceDiamonds />
+      </div>
+      <div className="status-actions">
+        <button className="diamond-control-btn" type="button" onClick={onBack}>
+          <span className="reference-diamond-button" aria-hidden="true">
+            <span className="result-back-arrow" />
+          </span>
+          <span>BACK</span>
+        </button>
+        {onNext && (
+          <button className="diamond-control-btn" type="button" onClick={onNext}>
+            <span>PROCEED</span>
+            <span className="reference-diamond-button" aria-hidden="true">
+              <span className="result-forward-arrow" />
+            </span>
+          </button>
+        )}
+      </div>
+    </section>
+  );
+}
+function ResultScreen({ onBack, onCamera, onGallery }) {
+  return (
+    <section className="result-screen">
+      <p className="testing-heading">START ANALYSIS</p>
+      
+      <div className="result-preview">
+        <span>Preview</span>
+        <div className="result-preview-box" aria-hidden="true" />
+      </div>
+
+      <div className="result-options">
+        <button className="result-option result-camera-option" type="button" onClick={onCamera}>
+          <div className="result-icon result-camera-icon" aria-hidden="true">
+            <span />
+          </div>
+          <b>ALLOW A.I.<br />TO SCAN YOUR FACE</b>
+        </button>
+
+        <button className="result-option result-gallery-option" type="button" onClick={onGallery}>
+          <div className="result-icon result-gallery-icon" aria-hidden="true">
+            <span />
+          </div>
+          <b>ALLOW A.I.<br />ACCESS GALLERY</b>
+        </button>
+      </div>
+
+      <div className="result-back-control">
+        <button className="diamond-control-btn" type="button" onClick={onBack}>
+          <span className="reference-diamond-button" aria-hidden="true">
+            <span className="result-back-arrow" />
+          </span>
+          <span>BACK</span>
+        </button>
+      </div>
+    </section>
+  );
 }
 
-function ResultScreen({ onBack, onCamera, onGallery, onNext }) {
-  return <section className="result-screen">
-    <p className="testing-heading">START ANALYSIS</p>
-    <div className="result-preview">
-      <span>Preview</span>
-      <div className="result-preview-box" aria-hidden="true" />
-    </div>
-    <div className="result-options">
-      <button className="result-option result-camera-option" type="button" onClick={onCamera}>
-        <span className="result-option-geometry" aria-hidden="true"><span /><span /><span /></span>
-        <span className="result-icon result-camera-icon" aria-hidden="true"><span /></span>
-        <b>ALLOW A.I.<br />TO SCAN YOUR FACE</b>
-      </button>
-      <button type="button" onClick={onGallery}>
-        <span className="result-icon result-gallery-icon" aria-hidden="true"><span /></span>
-        <b>ALLOW A.I.<br />ACCESS GALLERY</b>
-      </button>
-    </div>
-    <div className="result-back-control">
-      <button className="reference-diamond-button" type="button" onClick={onBack} aria-label="Back"><span className="result-back-arrow" /></button>
-      <span>BACK</span>
-    </div>
-  </section>;
-}
+
 
 function SelectScreen({ onBack, onSelectCategory }) {
   const [selectedCategory, setSelectedCategory] = useState('Demographics');
@@ -192,13 +234,42 @@ function SelectScreen({ onBack, onSelectCategory }) {
     if (label === 'Demographics') onSelectCategory(label);
   };
 
-  return <section className="select-screen"><div><p className="testing-heading">A.I. ANALYSIS</p><p className="select-copy">A.I. HAS ESTIMATED THE FOLLOWING.<br />FIX ESTIMATED INFORMATION IF NEEDED.</p></div><div className="select-options">{Object.keys(categoryDetails).map((label) => <button className={selectedCategory === label ? 'selected' : ''} type="button" key={label} onClick={() => selectCategory(label)}><span>{label}</span></button>)}</div><p className="select-detail">{categoryDetails[selectedCategory]}</p><div className="select-actions"><button className="reference-diamond-button" type="button" onClick={onBack} aria-label="Back"><span className="result-back-arrow" /></button><span>BACK</span><strong>GET SUMMARY</strong><button className="reference-diamond-button" type="button" onClick={() => onSelectCategory(selectedCategory)} aria-label="Get summary"><span className="result-forward-arrow" /></button></div></section>;
+  return (
+    <section className="select-screen">
+      <div>
+        <p className="testing-heading">A.I. ANALYSIS</p>
+        <p className="select-copy">A.I. HAS ESTIMATED THE FOLLOWING.<br />FIX ESTIMATED INFORMATION IF NEEDED.</p>
+      </div>
+      <div className="select-options">
+        {Object.keys(categoryDetails).map((label) => (
+          <button className={selectedCategory === label ? 'selected' : ''} type="button" key={label} onClick={() => selectCategory(label)}>
+            <span>{label}</span>
+          </button>
+        ))}
+      </div>
+      <p className="select-detail">{categoryDetails[selectedCategory]}</p>
+      <div className="select-actions">
+        <button className="diamond-control-btn" type="button" onClick={onBack}>
+          <span className="reference-diamond-button" aria-hidden="true">
+            <span className="result-back-arrow" />
+          </span>
+          <span>BACK</span>
+        </button>
+        <button className="diamond-control-btn" type="button" onClick={() => onSelectCategory(selectedCategory)}>
+          <span>PROCEED</span>
+          <span className="reference-diamond-button" aria-hidden="true">
+            <span className="result-forward-arrow" />
+          </span>
+        </button>
+      </div>
+    </section>
+  );
 }
 
-function SummaryScreen({ category, data, userDetails, onBack, onRetake, onHome }) {
+function SummaryScreen({ category, data, userDetails, onBack, onHome }) {
   return <section className="summary-screen">
     <div className="summary-heading"><p className="testing-heading">A.I. ANALYSIS</p><h1>{category.toUpperCase()}</h1><h2>{category === 'Demographics' ? 'PREDICTED RACE & AGE' : 'PERSONALIZED INSIGHTS'}</h2></div>
-    {category === 'Demographics' ? <DemographicsView data={data} userDetails={userDetails} onRetake={onRetake} onNext={null} /> : <AnalysisDetail category={category} data={data} userDetails={userDetails} />}
+    {category === 'Demographics' ? <DemographicsView data={data} userDetails={userDetails} onRetake={onBack} onNext={null} /> : <AnalysisDetail category={category} data={data} userDetails={userDetails} />}
     <div className="summary-footer">
       <button className="summary-footer-control" type="button" onClick={onBack}>
         <span className="summary-footer-diamond" aria-hidden="true"><span className="result-back-arrow" /></span>
