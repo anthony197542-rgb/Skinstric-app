@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 
-export default function DemographicsView({ data, userDetails, onRetake, onNext }) {
-  const sortPredictions = (values) => 
+export default function DemographicsView({ data, userDetails, onRetake, onBack, onHome }) {
+  const sortPredictions = (values) =>
     Object.entries(values || {})
       .map(([key, value]) => ({ key, value: Number(value) || 0 }))
       .sort((a, b) => b.value - a.value);
 
-  // Safely extract predictions with fallback empty objects
   const predictions = {
     race: sortPredictions(data?.race || data?.skin_tone || data?.skinTone || {}),
     age: sortPredictions(data?.age || data?.age_bracket || data?.ageBracket || {}),
@@ -14,7 +13,7 @@ export default function DemographicsView({ data, userDetails, onRetake, onNext }
   };
 
   const labels = { race: 'RACE', age: 'AGE', gender: 'SEX' };
-  
+
   const [activeType, setActiveType] = useState('race');
   const [selected, setSelected] = useState({
     race: predictions.race[0] || { key: 'Unknown', value: 0 },
@@ -25,13 +24,12 @@ export default function DemographicsView({ data, userDetails, onRetake, onNext }
   const activePrediction = selected[activeType] || predictions[activeType][0] || { key: 'Unknown', value: 0 };
   const activeList = predictions[activeType] || [];
 
-  const formatLabel = (value) => 
+  const formatLabel = (value) =>
     String(value || '').replace(/[-_]/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
-  
+
   const rawPercentage = Math.round((activePrediction.value || 0) * 100);
   const percentage = `${rawPercentage}%`;
 
-  // SVG dash calculation for radius 42 (Circumference ~264)
   const circumference = 264;
   const strokeDashoffset = circumference - (circumference * (activePrediction.value || 0));
 
@@ -40,81 +38,96 @@ export default function DemographicsView({ data, userDetails, onRetake, onNext }
   };
 
   return (
-    <div className="demographics-reference">
-      {/* Sidebar navigation for switching metrics */}
-      <div className="demographics-sidebar">
-        {Object.keys(labels).map((type) => {
-          const item = selected[type] || predictions[type][0] || { key: 'Unknown' };
-          return (
-            <button 
-              className={activeType === type ? 'active' : ''} 
-              type="button" 
-              key={type} 
-              onClick={() => setActiveType(type)}
-            >
-              <strong>{formatLabel(item.key)}</strong>
-              <span>{labels[type]}</span>
-            </button>
-          );
-        })}
-      </div>
+    <div className="demographics-page">
+      <div>
+        <div className="demographics-layout">
 
-      {/* Main active display with SVG Ring */}
-      <div className="demographics-main flex flex-col items-center justify-center">
-        <h2>{formatLabel(activePrediction.key)}</h2>
-        
-        <div className="relative flex items-center justify-center w-64 h-64 my-2">
-          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-            {/* Background Track */}
-            <circle 
-              cx="50" cy="50" r="42" 
-              className="stroke-zinc-200" 
-              strokeWidth="3" 
-              fill="transparent" 
-            />
-            {/* Dynamic Progress Arc with rounded ends */}
-            <circle 
-              cx="50" cy="50" r="42" 
-              className="stroke-zinc-900 transition-all duration-700 ease-out" 
-              strokeWidth="3" 
-              strokeLinecap="round" 
-              fill="transparent" 
-              strokeDasharray={circumference} 
-              strokeDashoffset={strokeDashoffset} 
-            />
-          </svg>
-          
-          {/* Centered Label */}
-          <div className="absolute flex items-center justify-center text-center">
-            <span className="text-5xl font-light tracking-tight text-zinc-900">{percentage}</span>
+          <div className="demographics-sidebar">
+            {Object.keys(labels).map((type) => {
+              const item = selected[type] || predictions[type][0] || { key: 'Unknown' };
+              const isActive = activeType === type;
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setActiveType(type)}
+                  className={`demographics-tab ${isActive ? 'active' : ''}`}
+                >
+                  <strong>{formatLabel(item.key)}</strong>
+                  <span>{labels[type]}</span>
+                </button>
+              );
+            })}
           </div>
-        </div>
-      </div>
 
-      {/* Breakdown list for current metric */}
-      <div className="demographics-list">
-        <div className="demographics-list-header">
-          <span>{labels[activeType]}</span>
-          <span>A.I. CONFIDENCE</span>
+          <div className="demographics-main">
+            <span className="demographics-eyebrow">{labels[activeType]} / A.I. ESTIMATE</span>
+            <h2>{formatLabel(activePrediction.key)}</h2>
+
+            <div className="demographics-score">
+              <svg viewBox="0 0 100 100" aria-label={`${percentage} confidence`}>
+                <circle cx="50" cy="50" r="42" className="score-track" />
+                <circle
+                  cx="50" cy="50" r="42"
+                  className="score-value"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  fill="transparent"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                />
+              </svg>
+              <span className="demographics-percentage">{percentage}</span>
+            </div>
+            <p className="demographics-caption">Confidence in the selected prediction</p>
+          </div>
+
+          <div className="demographics-list">
+            <div className="demographics-list-header">
+              <span>{labels[activeType]}</span>
+              <span>A.I. CONFIDENCE</span>
+            </div>
+
+            {activeList.map((item) => {
+              const isSelected = activePrediction.key === item.key;
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => choosePrediction(item)}
+                  className={`demographics-prediction ${isSelected ? 'selected' : ''}`}
+                >
+                  <span><i aria-hidden="true">◇</i>{formatLabel(item.key)}</span>
+                  <strong>{Math.round(item.value * 100)}%</strong>
+                </button>
+              );
+            })}
+          </div>
+
         </div>
-        {activeList.map((item) => (
-          <button 
-            className={activePrediction.key === item.key ? 'selected' : ''} 
-            type="button" 
-            key={item.key} 
-            onClick={() => choosePrediction(item)}
+
+        <div className="demographics-retake">
+          <p>If A.I. estimate is wrong, select the correct one.</p>
+          <button
+            type="button"
+            onClick={onRetake}
+            className="demographics-retake-button"
           >
-            <span className="demographics-bullet">◇</span>
-            <span>{formatLabel(item.key)}</span>
-            <strong>{Math.round(item.value * 100)}%</strong>
+            TEST ANOTHER PORTRAIT
           </button>
-        ))}
+        </div>
       </div>
 
-      <p className="demographics-note">If A.I. estimate is wrong, select the correct one.</p>
-      <button className="demographics-retake" type="button" onClick={onRetake}>
-        TEST ANOTHER PORTRAIT
-      </button>
+      <div className="demographics-footer">
+        <button type="button" onClick={onBack}>
+          ◄ Back
+        </button>
+
+        <button type="button" onClick={onHome}>
+          Home ►
+        </button>
+      </div>
+
     </div>
   );
 }

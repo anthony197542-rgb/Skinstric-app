@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { submitPhaseOne } from './api/skinstric.js';
 import Phase3Selfie from './components/Phase3Selfie.jsx';
 import Phase2Upload from './components/Phase2Upload.jsx';
@@ -76,6 +76,7 @@ export default function App() {
         {(screen === 'testing' || screen === 'processing' || screen === 'thank-you' || screen === 'result' || screen === 'select' || screen === 'summary' || screen === 'camera' || screen === 'gallery') && (
           <ReferenceHeader onHome={goHome} onEnter={beginTesting} />
         )}
+
         {screen === 'intro' && (
           <section className="intro-screen" aria-labelledby="intro-title">
             <div className="intro-frame">
@@ -100,6 +101,7 @@ export default function App() {
             </div>
           </section>
         )}
+
         {screen === 'testing' && (
           <section className="testing-screen" aria-labelledby="testing-title">
             <p id="testing-title" className="testing-heading">TO START ANALYSIS</p>
@@ -124,29 +126,95 @@ export default function App() {
             </button>
           </section>
         )}
-        {screen === 'processing' && <StatusScreen message={entryOffline ? 'Saved locally' : 'Processing submission'} onBack={goHome} />}
-        {screen === 'thank-you' && <StatusScreen message="Thank you!" submessage={entryOffline ? 'Backend unavailable. Continue in local mode.' : 'Proceed for the next step'} onBack={goHome} onNext={() => setScreen('result')} />}
-        {screen === 'result' && <ResultScreen onBack={() => setScreen('thank-you')} onCamera={() => setScreen('camera')} onGallery={() => setScreen('gallery')} onNext={() => setScreen('select')} />}
-        {screen === 'camera' && <Phase3Selfie userDetails={{ name, location }} onBack={() => setScreen('result')} onNext={(data) => { setSkincareData(data); setScreen('select'); }} />}
-        {screen === 'gallery' && <Phase2Upload userDetails={{ name, location }} onBack={() => setScreen('result')} onNext={(data) => { setSkincareData(data); setScreen('select'); }} />}
-        {screen === 'skincare' && <SkincareReveal data={skincareData} userDetails={{ name, location }} onBack={() => setScreen('camera')} onHome={goHome} />}
-        {screen === 'select' && <SelectScreen onBack={() => setScreen('result')} onSelectCategory={(category) => { setAnalysisCategory(category); setScreen('summary'); }} />}
-        {screen === 'summary' && <SummaryScreen category={analysisCategory} data={skincareData} userDetails={{ name, location }} onBack={() => setScreen('select')} onRetake={() => setScreen('result')} onHome={goHome} />}
+
+        {screen === 'processing' && (
+          <StatusScreen message={entryOffline ? 'Saved locally' : 'Processing submission'} onBack={goHome} />
+        )}
+
+        {screen === 'thank-you' && (
+          <StatusScreen
+            message="Thank you!"
+            submessage={entryOffline ? 'Backend unavailable. Continue in local mode.' : 'Proceed for the next step'}
+            onBack={goHome}
+            onNext={() => setScreen('result')}
+          />
+        )}
+
+        {screen === 'result' && (
+          <ResultScreen
+            onBack={() => setScreen('thank-you')}
+            onCamera={() => setScreen('camera')}
+            onGallery={() => setScreen('gallery')}
+            onNext={() => setScreen('select')}
+          />
+        )}
+
+        {screen === 'camera' && (
+          <Phase3Selfie
+            userDetails={{ name, location }}
+            onBack={() => setScreen('result')}
+            onResultsBack={() => setScreen('select')}
+            onData={setSkincareData}
+            onNext={(data) => { setSkincareData(data); setScreen('select'); }}
+          />
+        )}
+
+        {screen === 'gallery' && (
+          <Phase2Upload
+            userDetails={{ name, location }}
+            onBack={() => setScreen('result')}
+            onResultsBack={() => setScreen('select')}
+            onNext={(data) => { setSkincareData(data); setScreen('select'); }}
+          />
+        )}
+
+        {screen === 'skincare' && (
+          <SkincareReveal
+            data={skincareData}
+            userDetails={{ name, location }}
+            onBack={() => setScreen('camera')}
+            onHome={goHome}
+          />
+        )}
+
+        {screen === 'select' && (
+          <SelectScreen
+            onBack={() => setScreen('result')}
+            onSelectCategory={(category) => { setAnalysisCategory(category); setScreen('summary'); }}
+          />
+        )}
+
+        {screen === 'summary' && (
+          <SummaryScreen
+            category={analysisCategory}
+            data={skincareData}
+            userDetails={{ name, location }}
+            onBack={() => setScreen('select')}
+            onRetake={() => setScreen('result')}
+            onHome={goHome}
+          />
+        )}
       </main>
     </div>
   );
 }
 
 function ReferenceHeader({ onHome, onEnter }) {
-  return <header className="reference-header">
-    <button className="reference-brand" type="button" onClick={onHome}>SKINSTRIC</button>
-    <span className="reference-intro"><i>[</i> INTRO <i>]</i></span>
-    <button className="reference-code" type="button" onClick={onEnter}>ENTER CODE</button>
-  </header>;
+  return (
+    <header className="reference-header">
+      <button className="reference-brand" type="button" onClick={onHome}>SKINSTRIC</button>
+      <span className="reference-intro"><i>[</i> INTRO <i>]</i></span>
+      <button className="reference-code" type="button" onClick={onEnter}>ENTER CODE</button>
+    </header>
+  );
 }
 
 function ReferenceDiamonds() {
-  return <div className="reference-diamonds" aria-hidden="true"><span /><span /><span /></div>;
+  return (
+    <div className="reference-diamonds" aria-hidden="true">
+      <span /><span /><span />
+    </div>
+  );
 }
 
 function StatusScreen({ message, submessage, onBack, onNext }) {
@@ -180,11 +248,12 @@ function StatusScreen({ message, submessage, onBack, onNext }) {
     </section>
   );
 }
+
 function ResultScreen({ onBack, onCamera, onGallery }) {
   return (
     <section className="result-screen">
       <p className="testing-heading">START ANALYSIS</p>
-      
+
       <div className="result-preview">
         <span>Preview</span>
         <div className="result-preview-box" aria-hidden="true" />
@@ -218,8 +287,6 @@ function ResultScreen({ onBack, onCamera, onGallery }) {
   );
 }
 
-
-
 function SelectScreen({ onBack, onSelectCategory }) {
   const [selectedCategory, setSelectedCategory] = useState('Demographics');
   const categoryDetails = {
@@ -242,7 +309,12 @@ function SelectScreen({ onBack, onSelectCategory }) {
       </div>
       <div className="select-options">
         {Object.keys(categoryDetails).map((label) => (
-          <button className={selectedCategory === label ? 'selected' : ''} type="button" key={label} onClick={() => selectCategory(label)}>
+          <button
+            className={selectedCategory === label ? 'selected' : ''}
+            type="button"
+            key={label}
+            onClick={() => selectCategory(label)}
+          >
             <span>{label}</span>
           </button>
         ))}
@@ -266,21 +338,28 @@ function SelectScreen({ onBack, onSelectCategory }) {
   );
 }
 
-function SummaryScreen({ category, data, userDetails, onBack, onHome }) {
-  return <section className="summary-screen">
-    <div className="summary-heading"><p className="testing-heading">A.I. ANALYSIS</p><h1>{category.toUpperCase()}</h1><h2>{category === 'Demographics' ? 'PREDICTED RACE & AGE' : 'PERSONALIZED INSIGHTS'}</h2></div>
-    {category === 'Demographics' ? <DemographicsView data={data} userDetails={userDetails} onRetake={onBack} onNext={null} /> : <AnalysisDetail category={category} data={data} userDetails={userDetails} />}
-    <div className="summary-footer">
-      <button className="summary-footer-control" type="button" onClick={onBack}>
-        <span className="summary-footer-diamond" aria-hidden="true"><span className="result-back-arrow" /></span>
-        <span>BACK</span>
-      </button>
-      <button className="summary-footer-control summary-footer-home" type="button" onClick={onHome}>
-        <span>HOME</span>
-        <span className="summary-footer-diamond" aria-hidden="true"><span className="result-forward-arrow" /></span>
-      </button>
-    </div>
-  </section>;
+function SummaryScreen({ category, data, userDetails, onBack, onHome, onRetake }) {
+  return (
+    <section className="summary-screen p-8 max-w-5xl mx-auto">
+      <div className="summary-heading mb-6">
+        <p className="testing-heading text-xs tracking-widest text-zinc-500 uppercase">A.I. ANALYSIS</p>
+        <h1 className="text-3xl font-light tracking-tight">{category.toUpperCase()}</h1>
+        <h2 className="text-sm text-zinc-500">{category === 'Demographics' ? 'PREDICTED RACE & AGE' : 'PERSONALIZED INSIGHTS'}</h2>
+      </div>
+
+      {category === 'Demographics' ? (
+        <DemographicsView
+          data={data}
+          userDetails={userDetails}
+          onRetake={onRetake}
+          onBack={onBack}
+          onHome={onHome}
+        />
+      ) : (
+        <AnalysisDetail category={category} data={data} userDetails={userDetails} />
+      )}
+    </section>
+  );
 }
 
 function AnalysisDetail({ category, userDetails }) {
@@ -303,9 +382,22 @@ function AnalysisDetail({ category, userDetails }) {
   };
   const detail = details[category];
 
-  return <div className="analysis-detail">
-    <div className="analysis-detail-intro"><h3>{detail.title}</h3><p>{detail.copy}</p></div>
-    <div className="analysis-detail-items">{detail.items.map((item, index) => <div className="analysis-detail-item" key={item}><span>0{index + 1}</span><strong>{item}</strong><b>REVIEW</b></div>)}</div>
-    <p className="analysis-detail-note">Your portrait analysis is saved for the next skincare recommendation step.</p>
-  </div>;
+  return (
+    <div className="analysis-detail">
+      <div className="analysis-detail-intro">
+        <h3>{detail.title}</h3>
+        <p>{detail.copy}</p>
+      </div>
+      <div className="analysis-detail-items">
+        {detail.items.map((item, index) => (
+          <div className="analysis-detail-item" key={item}>
+            <span>0{index + 1}</span>
+            <strong>{item}</strong>
+            <b>REVIEW</b>
+          </div>
+        ))}
+      </div>
+      <p className="analysis-detail-note">Your portrait analysis is saved for the next skincare recommendation step.</p>
+    </div>
+  );
 }

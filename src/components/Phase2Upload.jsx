@@ -3,7 +3,7 @@ import { UploadCloud, Image as ImageIcon, Loader2, AlertCircle, ArrowLeft, Arrow
 import { submitPhaseTwo } from '../api/skinstric.js';
 import DemographicsView from './DemographicsView.jsx';
 
-export default function Phase2Upload({ onNext, onBack, userDetails }) {
+export default function Phase2Upload({ onNext, onBack, onResultsBack, userDetails }) {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [base64String, setBase64String] = useState(null);
@@ -206,6 +206,7 @@ export default function Phase2Upload({ onNext, onBack, userDetails }) {
           data={demographicsData}
           userDetails={userDetails}
           onRetake={handleResetImage}
+          onBack={onResultsBack || onBack}
           onNext={() => onNext?.(demographicsData)}
         />
       )}

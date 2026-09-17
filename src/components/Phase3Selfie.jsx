@@ -3,13 +3,13 @@ import { Camera, RefreshCw, Loader2, AlertCircle, Sparkles, SwitchCamera } from 
 import { submitPhaseTwo } from '../api/skinstric.js';
 import DemographicsView from './DemographicsView.jsx';
 
-export default function Phase3Selfie({ onBack, onNext, userDetails }) {
+export default function Phase3Selfie({ onBack, onResultsBack, onData, onNext, userDetails }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
 
-  const [step, setStep] = useState('setup'); // 'setup', 'live', 'preview'
-  const [stream, setStream] = useState(null);
+  // 'menu' starts at the diamond selection view; switches to 'setup', 'live', or 'preview' when active
+  const [step, setStep] = useState('menu');
   const [facingMode, setFacingMode] = useState('user');
   const [capturedImage, setCapturedImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,6 +17,7 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
   const [apiError, setApiError] = useState('');
   const [demographicsData, setDemographicsData] = useState(null);
 
+  // Automatically start camera after entering setup state
   useEffect(() => {
     let timer;
     if (step === 'setup') {
@@ -42,16 +43,19 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
         audio: false,
       });
 
-      setStream(newStream);
       streamRef.current = newStream;
       setStep('live');
 
-      if (videoRef.current) {
-        videoRef.current.srcObject = newStream;
-      }
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = newStream;
+          videoRef.current.play().catch(e => console.log("Auto-play prevented:", e));
+        }
+      }, 50);
+
     } catch (err) {
       console.error('Webcam error:', err);
-      setCameraError('Unable to access camera. Please allow permissions.');
+      setCameraError('Camera access error: ' + err.message);
       setStep('setup');
     }
   };
@@ -59,7 +63,6 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
   const stopCamera = () => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
-    setStream(null);
   };
 
   const toggleFacingMode = () => {
@@ -70,7 +73,7 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
 
   const takeSelfie = () => {
     if (!videoRef.current || !canvasRef.current) return;
-    
+
     const video = videoRef.current;
     const canvas = canvasRef.current;
 
@@ -94,6 +97,7 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
 
   const handleRetakeSelfie = () => {
     setCapturedImage(null);
+    setDemographicsData(null);
     setStep('setup');
   };
 
@@ -105,6 +109,7 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
       const res = await submitPhaseTwo(capturedImage);
       if (res && res.data) {
         setDemographicsData(res.data);
+        onData?.(res.data);
       } else {
         throw new Error('Invalid response received from API.');
       }
@@ -126,9 +131,39 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
       <main className="camera-screen-container">
         <canvas ref={canvasRef} className="hidden" />
 
-        {!demographicsData ? (
+        {/* STEP 1: Diamond Menu / Selection View */}
+        {step === 'menu' && !demographicsData && (
+          <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center">
+            <div className="camera-rotating-diamonds mb-8" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <h2 className="text-xl font-mono tracking-widest uppercase mb-6">SELECT ANALYSIS MODULE</h2>
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => setStep('setup')}
+                className="camera-action-btn primary px-8 py-4 font-mono uppercase tracking-widest"
+              >
+                STARTING CAMERA / DEMOGRAPHICS
+              </button>
+            </div>
+            {/* Bottom Back Button for the Menu */}
+            <div className="absolute bottom-8 left-8">
+              <button className="diamond-control-btn flex items-center gap-2" type="button" onClick={onBack}>
+                <span className="reference-diamond-button" aria-hidden="true">
+                  <span className="result-back-arrow" />
+                </span>
+                <span>BACK</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 2: Camera & Preview Flow */}
+        {step !== 'menu' && !demographicsData && (
           <>
-            {/* Rotating Dotted Diamond Rings */}
             <div className="camera-rotating-diamonds" aria-hidden="true">
               <span />
               <span />
@@ -144,20 +179,18 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
               </div>
             )}
 
-            {step === 'live' && (
-              <div className="camera-video-wrapper">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className={`w-full h-full object-cover ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
-                />
-                <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                  <div className="w-56 h-72 border border-dashed border-white/60 rounded-full" />
-                </div>
+            <div className={`camera-video-wrapper ${step === 'live' ? 'block' : 'hidden'}`}>
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className={`w-full h-full object-cover ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
+              />
+              <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
+                <div className="w-56 h-72 border border-dashed border-white/60 rounded-full" />
               </div>
-            )}
+            </div>
 
             {step === 'preview' && capturedImage && (
               <div className="camera-video-wrapper">
@@ -172,7 +205,13 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
               </div>
             )}
 
-            {/* Bottom Guidelines and Progress Bar */}
+            {apiError && (
+              <div className="absolute top-24 left-6 right-6 p-4 border border-red-500/40 bg-red-950/20 text-red-400 font-mono text-xs flex items-center gap-3 uppercase z-30" role="alert">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                <span>{apiError}</span>
+              </div>
+            )}
+
             <div className="camera-bottom-guide">
               <p className="camera-tips-heading">TO GET BETTER RESULTS MAKE SURE TO HAVE</p>
               <div className="camera-tips-row">
@@ -180,7 +219,7 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
                 <span>◇ FRONTAL POSE</span>
                 <span>◇ ADEQUATE LIGHTING</span>
               </div>
-              
+
               <div className="camera-progress-container">
                 <span className="camera-progress-arrow-left">◀</span>
                 <div className="camera-progress-track">
@@ -190,9 +229,8 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
               </div>
             </div>
 
-            {/* Bottom Action Controls */}
             <div className="camera-footer-actions">
-              <button className="diamond-control-btn" type="button" onClick={onBack}>
+              <button className="diamond-control-btn" type="button" onClick={() => setStep('menu')}>
                 <span className="reference-diamond-button" aria-hidden="true">
                   <span className="result-back-arrow" />
                 </span>
@@ -223,14 +261,21 @@ export default function Phase3Selfie({ onBack, onNext, userDetails }) {
               )}
             </div>
           </>
-        ) : (
+        )}
+
+        {/* STEP 3: Demographics Results View */}
+        {demographicsData && (
           <DemographicsView
             data={demographicsData}
             userDetails={userDetails}
             onRetake={handleRetakeSelfie}
-            onNext={() => onNext?.(demographicsData)}
+            onBack={onResultsBack || onBack}
+            onHome={() => {
+              window.location.reload();
+            }}
           />
         )}
+
       </main>
     </div>
   );
