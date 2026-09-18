@@ -29,6 +29,63 @@ textarea {
   font: inherit;
 }
 
+button {
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+button:focus-visible {
+  outline: 2px solid #1a1b1c;
+  outline-offset: 4px;
+}
+
+button:hover:not(:disabled) {
+  outline: 1px solid #1a1b1c;
+  outline-offset: 3px;
+  box-shadow: 0 4px 0 rgba(26, 27, 28, .12);
+}
+
+.result-options button:hover:not(:disabled) {
+  outline: 0;
+  box-shadow: none;
+}
+
+.diamond-control-btn:hover:not(:disabled) {
+  outline: 0;
+  box-shadow: none;
+}
+
+.diamond-control-btn:focus,
+.diamond-control-btn:focus-visible,
+.diamond-control-btn:active {
+  outline: 0;
+  background: transparent;
+  color: #1a1b1c;
+  box-shadow: none;
+  transform: none;
+}
+
+.diamond-control-btn:hover:not(:disabled) .reference-diamond-button {
+  border-color: #1a1b1c;
+  background: #1a1b1c;
+}
+
+.diamond-control-btn:hover:not(:disabled) .result-back-arrow,
+.diamond-control-btn:hover:not(:disabled) .result-forward-arrow {
+  border-right-color: #fff;
+  border-left-color: #fff;
+}
+
+button:active {
+  color: #fff;
+  background: #1a1b1c;
+  transform: scale(.98);
+}
+
+.select-options button:active,
+.demographics-prediction:active {
+  transform: none;
+}
+
 .skinstric-app {
   min-height: 100vh;
   color: #1a1b1c;
@@ -665,6 +722,11 @@ textarea {
   background: #fff;
 }
 
+.result-icon:hover {
+  border-color: #1a1b1c;
+  background: #1a1b1c;
+}
+
 /* Camera Aperture Icon styling */
 .result-camera-icon::before {
   content: '';
@@ -677,6 +739,11 @@ textarea {
   transform: rotate(-45deg);
 }
 
+.result-camera-icon:hover::before {
+  border-color: #fff;
+  background: conic-gradient(#fff 0 25%, #1a1b1c 25% 50%, #fff 50% 75%, #1a1b1c 75% 100%);
+}
+
 .result-camera-icon span {
   position: absolute;
   width: 24px;
@@ -684,6 +751,10 @@ textarea {
   background: #1a1b1c;
   border-radius: 50%;
   transform: rotate(-45deg);
+}
+
+.result-camera-icon:hover span {
+  background: #fff;
 }
 
 /* Gallery Icon styling */
@@ -695,6 +766,10 @@ textarea {
   border: 2px solid #1a1b1c;
   border-radius: 4px;
   transform: rotate(-45deg);
+}
+
+.result-gallery-icon:hover::before {
+  border-color: #fff;
 }
 
 .result-gallery-icon::after {
@@ -709,6 +784,10 @@ textarea {
   transform: rotate(-45deg);
 }
 
+.result-gallery-icon:hover::after {
+  background: #fff;
+}
+
 .result-gallery-icon span {
   position: absolute;
   bottom: 70px;
@@ -718,6 +797,10 @@ textarea {
   background: #1a1b1c;
   clip-path: polygon(0 100%, 40% 40%, 70% 80%, 100% 30%, 100% 100%);
   transform: rotate(-45deg);
+}
+
+.result-gallery-icon:hover span {
+  background: #fff;
 }
 
 .result-preview {
@@ -820,6 +903,26 @@ textarea {
   font-size: 18px;
   font-weight: 800;
   cursor: pointer;
+}
+
+.testing-back-control:hover:not(:disabled),
+.testing-back-control:focus,
+.testing-back-control:focus-visible,
+.testing-back-control:active {
+  outline: 0;
+  background: transparent;
+  color: #1a1b1c;
+  box-shadow: none;
+  transform: none;
+}
+
+.testing-back-control:hover:not(:disabled) .testing-back-diamond {
+  border-color: #1a1b1c;
+  background: #1a1b1c;
+}
+
+.testing-back-control:hover:not(:disabled) .testing-back-arrow {
+  border-right-color: #fff;
 }
 
 .testing-back-diamond {
