@@ -84,7 +84,7 @@ export default function App() {
               <div className="intro-diamond intro-diamond-outer" aria-hidden="true" />
               <div className="intro-diamond intro-diamond-inner" aria-hidden="true" />
 
-              <button className="intro-side-action intro-discover" type="button">
+              <button className="intro-side-action intro-discover" type="button" onClick={beginTesting}>
                 <span className="intro-mark" aria-hidden="true"><span /></span>
                 <span>DISCOVER A.I.</span>
               </button>
@@ -103,7 +103,7 @@ export default function App() {
         )}
 
         {screen === 'testing' && (
-          <section className="testing-screen" aria-labelledby="testing-title">
+          <section className="testing-screen phase-one-transition" aria-labelledby="testing-title">
             <p id="testing-title" className="testing-heading">TO START ANALYSIS</p>
             <div className="testing-stage">
               <p className="testing-prompt">CLICK TO TYPE</p>
