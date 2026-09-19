@@ -174,10 +174,18 @@ button:active {
 }
 
 .intro-frame:has(.intro-discover:hover) .intro-content {
-  transform: translateX(-180px);
+  transform: none;
 }
 
 .intro-frame:has(.intro-test:hover) .intro-content {
+  transform: none;
+}
+
+.intro-frame:has(.intro-discover:hover) .intro-content h1 {
+  transform: translateX(-180px);
+}
+
+.intro-frame:has(.intro-test:hover) .intro-content h1 {
   transform: translateX(180px);
 }
 
@@ -295,6 +303,8 @@ button:active {
 }
 
 .intro-frame .intro-content h1 {
+  position: relative;
+  z-index: 1;
   margin: 0 0 20px;
   font-size: clamp(3rem, 6.3vw, 5.8rem);
   line-height: .94;
@@ -303,9 +313,9 @@ button:active {
 .intro-frame .intro-content p {
   position: absolute;
   right: auto;
-  bottom: 0;
-  left: 20px;
-  width: 220px;
+  bottom: 24px;
+  left: 24px;
+  width: 180px;
   margin: 0;
   color: #151515;
   font-size: 8px;
@@ -313,6 +323,7 @@ button:active {
   line-height: 1.35;
   text-align: left;
   text-transform: uppercase;
+  z-index: 0;
 }
 
 .intro-side-action {
